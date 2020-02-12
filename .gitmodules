@@ -47,3 +47,18 @@
 [submodule "plugins/reports/counter/classes/COUNTER"]
 	path = plugins/reports/counter/classes/COUNTER
 	url = https://github.com/ulsdevteam/COUNTER.git
+[submodule "plugins/pubIds/zenon"]
+	path = plugins/pubIds/zenon
+	url = https://github.com/dainst/ojs-zenon-plugin
+	branch = ojs3
+[submodule "plugins/themes/idaitheme"]
+	path = plugins/themes/idaitheme
+	url = https://github.com/dainst/ojs3_theme
+[submodule "plugins/generic/cilantro"]
+	path = plugins/generic/cilantro
+	url = https://github.com/dainst/ojs-cilantro-plugin
+	branch = ojs3
+[submodule "plugins/importexport/quickSubmit"]
+	path = plugins/importexport/quickSubmit
+	url = https://github.com/pkp/quickSubmit
+	branch = stable-3_1_2

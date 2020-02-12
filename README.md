@@ -1,5 +1,12 @@
 # Open Journal Systems
 
+## DAI Version
+This Version is based on ojs 3.1.2.4 (stable) and includes the following Plugins:
+* [PKP] quickSubmit
+* [DAI] zenon
+* [DAI] idaitheme
+* [DAI] cilantro
+
 > Open Journal Systems (OJS) has been developed by the Public Knowledge Project. For general information about OJS and other open research systems, visit the [PKP web site][pkp].
 
 [![Build Status](https://travis-ci.org/pkp/ojs.svg?branch=master)](https://travis-ci.org/pkp/ojs)
