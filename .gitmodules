@@ -62,3 +62,6 @@
 	path = plugins/importexport/quickSubmit
 	url = https://github.com/pkp/quickSubmit
 	branch = stable-3_1_2
+[submodule "plugins/generic/daiBookViewer"]
+	path = plugins/generic/daiBookViewer
+	url = https://github.com/dainst/dai-book-viewer-ojs-plugin
