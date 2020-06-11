@@ -11,6 +11,15 @@ This Version is based on ojs 3.1.2.4 (stable) and includes the following Plugins
 
 [![Build Status](https://travis-ci.org/pkp/ojs.svg?branch=master)](https://travis-ci.org/pkp/ojs)
 
+### Updates
+1. Update submodule in its own repository, e.g. dainst/ojs3_theme, commit and push your changes.
+2. Checkout this repository, navigate to the updated submodule and `git pull`. Maybe you need to checkout the correct branch/commit manually.
+3. Leave the submodule and exceute `git add path/to/submodule`, `git commit -m "Update submodule xy"` and `git push`.
+4. The only thing to do on the server should be `sudo -u www-data git pull`. 
+
+Never update this repository on the server and remember to pull as www-data to avoid files owned by the root user.
+
+
 ## Documentation
 
 You will find detailed guides in [docs](docs) folder.
