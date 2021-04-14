@@ -320,10 +320,10 @@ allowed_html = "a[href|target|title],em,strong,cite,code,ul,ol,li[class],dl,dt,d
 
 ; Allow envelope sender to be specified
 ; (may not be possible with some server configurations)
-; allow_envelope_sender = Off
+; allow_envelope_sender = On
 
 ; Default envelope sender to use if none is specified elsewhere
-; default_envelope_sender = my_address@my_host.com
+; default_envelope_sender = dev.idai.publications@dainst.de
 
 ; Force the default envelope sender (if present)
 ; This is useful if setting up a site-wide no-reply address
