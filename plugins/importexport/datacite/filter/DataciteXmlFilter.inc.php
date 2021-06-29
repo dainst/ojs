@@ -7,11 +7,17 @@
  * Copyright (c) 2000-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
+ * edited (2021) by M. Riedel
+ *
  * @class DataciteXmlFilter
  * @ingroup plugins_importexport_datacite
  *
  * @brief Class that converts an Issue to a DataCite XML document.
  */
+
+// Creator types
+define('DATACITE_NAME_IDENTIFIER_SCHEME', 'ORCID');
+define('DATACITE_ORCID_SCHEME_URI', 'https://orcid.org');
 
 // Title types
 define('DATACITE_TITLETYPE_TRANSLATED', 'TranslatedTitle');
@@ -30,6 +36,7 @@ define('DATACITE_IDTYPE_PROPRIETARY', 'publisherId');
 define('DATACITE_IDTYPE_EISSN', 'EISSN');
 define('DATACITE_IDTYPE_ISSN', 'ISSN');
 define('DATACITE_IDTYPE_DOI', 'DOI');
+define('DATACITE_IDTYPE_URL', 'URL');
 
 // Relation types
 define('DATACITE_RELTYPE_ISVARIANTFORMOF', 'IsVariantFormOf');
@@ -37,6 +44,7 @@ define('DATACITE_RELTYPE_HASPART', 'HasPart');
 define('DATACITE_RELTYPE_ISPARTOF', 'IsPartOf');
 define('DATACITE_RELTYPE_ISPREVIOUSVERSIONOF', 'IsPreviousVersionOf');
 define('DATACITE_RELTYPE_ISNEWVERSIONOF', 'IsNewVersionOf');
+define('DATACITE_RELTYPE_HASMETADATA', 'HasMetadata');
 
 // Description types
 define('DATACITE_DESCTYPE_ABSTRACT', 'Abstract');
@@ -75,8 +83,11 @@ class DataciteXmlFilter extends NativeExportFilter {
 	 * @param $pubObject Issue|PublishedArticle|ArticleGalley
 	 * @return DOMDocument
 	 */
+
 	function &process(&$pubObject) {
-		// Create the XML document
+
+		/* Create the XML document
+		-----------------------------------------*/
 		$doc = new DOMDocument('1.0', 'utf-8');
 		$doc->preserveWhiteSpace = false;
 		$doc->formatOutput = true;
@@ -85,7 +96,8 @@ class DataciteXmlFilter extends NativeExportFilter {
 		$plugin = $deployment->getPlugin();
 		$cache = $plugin->getCache();
 
-		// Get all objects
+		/* Get all objects
+		-----------------------------------------*/
 		$issue = $article = $galley = $galleyFile = null;
 		if (is_a($pubObject, 'Issue')) {
 			$issue = $pubObject;
@@ -120,65 +132,78 @@ class DataciteXmlFilter extends NativeExportFilter {
 			}
 		}
 
-		// Identify the object locale.
+		/* Identify the object locale
+		-----------------------------------------*/
 		$objectLocalePrecedence = $this->getObjectLocalePrecedence($context, $article, $galley);
-		// The publisher is required.
-		// Use the journal title as DataCite recommends for now.
-		$publisher = $this->getPrimaryTranslation($context->getName(null), $objectLocalePrecedence);
-		assert(!empty($publisher));
-		// The publication date is required.
-		$publicationDate = (isset($article) ? $article->getDatePublished() : null);
-		if (empty($publicationDate)) {
-			$publicationDate = $issue->getDatePublished();
-		}
-		assert(!empty($publicationDate));
 
-		// Create the root node
+		/* Create the root node
+		-----------------------------------------*/
 		$rootNode = $this->createRootNode($doc);
 		$doc->appendChild($rootNode);
-		// DOI (mandatory)
+
+		/* Identifier: DOI (mandatory)
+		-----------------------------------------*/
 		$doi = $pubObject->getStoredPubId('doi');
 		if ($plugin->isTestMode($context)) {
 			$doi = PKPString::regexp_replace('#^[^/]+/#', DATACITE_API_TESTPREFIX . '/', $doi);
 		}
 		$rootNode->appendChild($node = $doc->createElementNS($deployment->getNamespace(), 'identifier', htmlspecialchars($doi, ENT_COMPAT, 'UTF-8')));
 		$node->setAttribute('identifierType', DATACITE_IDTYPE_DOI);
-		// Creators (mandatory)
-		$rootNode->appendChild($this->createCreatorsNode($doc, $issue, $article, $galley, $galleyFile, $publisher, $objectLocalePrecedence));
-		// Title (mandatory)
+
+		/* Creators (mandatory)
+		-----------------------------------------*/
+		$rootNode->appendChild($this->createCreatorsNode($doc, $issue, $article));
+
+		/* Title (mandatory)
+		-----------------------------------------*/
 		$rootNode->appendChild($this->createTitlesNode($doc, $issue, $article, $galley, $galleyFile, $objectLocalePrecedence));
-		// Publisher (mandatory)
+
+		/* Publisher (mandatory)
+		-----------------------------------------*/
+		$publisher = "Deutsches Archäologisches Institut";  // fix for dai-specific usage (plugin-fork)
 		$rootNode->appendChild($node = $doc->createElementNS($deployment->getNamespace(), 'publisher', htmlspecialchars($publisher, ENT_COMPAT, 'UTF-8')));
-		// Publication Year (mandatory)
-		$rootNode->appendChild($node = $doc->createElementNS($deployment->getNamespace(), 'publicationYear', date('Y', strtotime($publicationDate))));
-		// Subjects
-		$subject = null;
-		if (!empty($galleyFile) && is_a($galleyFile, 'SupplementaryFile')) {
-			$subject = $this->getPrimaryTranslation($galleyFile->getSubject(null), $objectLocalePrecedence);
-		} elseif (!empty($article)) {
-			$subject = $this->getPrimaryTranslation($article->getSubject(null), $objectLocalePrecedence);
+
+		/* publication date
+		-------------------------------------*/
+		$publicationDate = (isset($article) ? $article->getDatePublished() : null);
+		if (empty($publicationDate)) {
+			$publicationDate = $issue->getDatePublished();
 		}
-		if (!empty($subject)) {
-			$subjectsNode = $doc->createElementNS($deployment->getNamespace(), 'subjects');
-			$subjectsNode->appendChild($node = $doc->createElementNS($deployment->getNamespace(), 'subject', htmlspecialchars($subject, ENT_COMPAT, 'UTF-8')));
-			$rootNode->appendChild($subjectsNode);
-		}
-		// Dates
+		assert(!empty($publicationDate));
+
 		$rootNode->appendChild($this->createDatesNode($doc, $issue, $article, $galley, $galleyFile, $publicationDate));
-		// Language
+
+		/* Publication Year (mandatory)
+		-----------------------------------------*/
+		$rootNode->appendChild($node = $doc->createElementNS($deployment->getNamespace(), 'publicationYear', date('Y', strtotime($publicationDate))));
+
+		/* Language
+		-------------------------------------*/
 		$rootNode->appendChild($node = $doc->createElementNS($deployment->getNamespace(), 'language', AppLocale::getIso1FromLocale($objectLocalePrecedence[0])));
-		// Resource Type
+
+		/* Resource Type
+		-------------------------------------*/
 		$resourceTypeNode = $this->createResourceTypeNode($doc, $issue, $article, $galley, $galleyFile);
 		if ($resourceTypeNode) $rootNode->appendChild($resourceTypeNode);
-		// Alternate Identifiers
+
+		/* Alternate Identifiers
+		-------------------------------------*/
 		$rootNode->appendChild($this->createAlternateIdentifiersNode($doc, $issue, $article, $galley));
-		// Related Identifiers
+
+		/*  Related Identifiers
+		-----------------------------------------*/
 		$relatedIdentifiersNode = $this->createRelatedIdentifiersNode($doc, $issue, $article, $galley);
 		if ($relatedIdentifiersNode) $rootNode->appendChild($relatedIdentifiersNode);
-		// Sizes
+
+		/* Sizes
+		-----------------------------------------
 		$sizesNode = $this->createSizesNode($doc, $issue, $article, $galley, $galleyFile);
 		if ($sizesNode) $rootNode->appendChild($sizesNode);
-		// Formats
+
+		*/
+
+		/* Formats
+		-----------------------------------------*/
 		if (!empty($galleyFile)) {
 			$format = $galleyFile->getFileType();
 			if (!empty($format)) {
@@ -187,7 +212,9 @@ class DataciteXmlFilter extends NativeExportFilter {
 				$rootNode->appendChild($formatsNode);
 			}
 		}
-		// Rights
+
+		/* Rights
+		----------------------------------------*/
 		$rightsURL = $article ? $article->getLicenseURL() : $context->getSetting('licenseURL');
 		if(!empty($rightsURL)) {
 			$rightsNode = $doc->createElementNS($deployment->getNamespace(), 'rightsList');
@@ -195,7 +222,36 @@ class DataciteXmlFilter extends NativeExportFilter {
 			$node->setAttribute('rightsURI', $rightsURL);
 			$rootNode->appendChild($rightsNode);
 		}
-		// Descriptions
+
+		/* Subjects
+		-----------------------------------------*/
+		if (!empty($article)) {
+
+			$submissionKeywordDao = DAORegistry::getDAO('SubmissionKeywordDAO');
+			$subjects = array_filter($submissionKeywordDao->getKeywords($article->getId(), array_keys(\PKPLocale::getAllLocales())));
+		}
+
+		if (!empty($subjects)) {
+
+			$locale_keys = array_keys($subjects);
+			$subjectsNode = $doc->createElementNS($deployment->getNamespace(), 'subjects');
+
+			foreach($locale_keys as $locale_key) {
+
+				// format locale_key to valid value of the local union type:
+				$valid_local_key = preg_replace("/_/", "-", $locale_key);
+
+				foreach ($subjects[$locale_key] as $subject) {
+
+					$subjectsNode->appendChild($node = $doc->createElementNS($deployment->getNamespace(), 'subject', htmlspecialchars($subject, ENT_COMPAT, 'UTF-8')));
+					$node->setAttribute('xml:lang', $valid_local_key);
+					$rootNode->appendChild($subjectsNode);
+				}
+			}
+		}
+
+		/* Descriptions
+		-----------------------------------------*/
 		$descriptionsNode = $this->createDescriptionsNode($doc, $issue, $article, $galley, $galleyFile, $objectLocalePrecedence);
 		if ($descriptionsNode) $rootNode->appendChild($descriptionsNode);
 
@@ -229,36 +285,61 @@ class DataciteXmlFilter extends NativeExportFilter {
 	 * @param $objectLocalePrecedence array
 	 * @return DOMElement
 	 */
-	function createCreatorsNode($doc, $issue, $article, $galley, $galleyFile, $publisher, $objectLocalePrecedence) {
+	function createCreatorsNode($doc, $issue, $article) {
+
 		$deployment = $this->getDeployment();
 		$creators = array();
+
 		switch (true) {
-			case (isset($galleyFile) && is_a($galleyFile, 'SupplementaryFile')):
-				// Check whether we have a supp file creator set...
-				$creator = $this->getPrimaryTranslation($galleyFile->getCreator(null), $objectLocalePrecedence);
-				if (!empty($creator)) {
-					$creators[] = $creator;
-					break;
-				}
-				// ...if not then go on by retrieving the article
-				// authors.
 			case isset($article):
-				// Retrieve the article authors.
+
 				$authors = $article->getAuthors();
 				assert(!empty($authors));
+
+				// get author information:
 				foreach ($authors as $author) { /* @var $author Author */
-					$creators[] = $author->getFullName(false, true);
+
+					$fullName = $author->getFullName(false, true);
+					$nameType = "Personal";
+					$givenName = $author->getLocalizedGivenName();
+					$familyName = $author->getLocalizedFamilyName();
+					$orcId = ($author->getOrcid() !== "") ? $author->getOrcid() : false;
+
+					// $affiliaton = ROR-ID? => OJS 3.3 support for ROR Plugin!
+					// s. https://github.com/pkp/pkp-lib/issues/5912
+					// for now be possible: <affiliation>????</affiliation>
+
+					$creators[] = array("fullName" => $fullName, "nameType" => $nameType, "givenName" => $givenName,
+						"familyName" => $familyName, "orcId" => $orcId);
 				}
 				break;
+
 			case isset($issue):
-				$creators[] = $publisher;
+
+				// fixed settings:
+				$nameType = "Organizational";
+				$fullName = "Deutsches Archäologisches Institut";
+				$creators[] = array("fullName" => $fullName, "nameType" => $nameType, "givenName" => false,
+				"familyName" => false, "orcId" => false);
 				break;
 		}
+
 		assert(count($creators) >= 1);
 		$creatorsNode = $doc->createElementNS($deployment->getNamespace(), 'creators');
-		foreach ($creators as $creator) {
+
+		foreach ($creators as $index => $creator) {
 			$creatorNode = $doc->createElementNS($deployment->getNamespace(), 'creator');
-			$creatorNode->appendChild($node = $doc->createElementNS($deployment->getNamespace(), 'creatorName', htmlspecialchars($creator, ENT_COMPAT, 'UTF-8')));
+			$creatorNode->appendChild($node = $doc->createElementNS($deployment->getNamespace(), 'creatorName', htmlspecialchars($creator["fullName"], ENT_COMPAT, 'UTF-8')));
+			$node->setAttribute('nameType', htmlspecialchars($creator["nameType"]));
+			$creatorNode->appendChild($node = $doc->createElementNS($deployment->getNamespace(), 'givenName', htmlspecialchars($creator["givenName"], ENT_COMPAT, 'UTF-8')));
+			$creatorNode->appendChild($node = $doc->createElementNS($deployment->getNamespace(), 'familyName', htmlspecialchars($creator["familyName"], ENT_COMPAT, 'UTF-8')));
+
+			if($creator["orcId"] !== false) {
+				$creatorNode->appendChild($node = $doc->createElementNS($deployment->getNamespace(), 'nameIdentifier', htmlspecialchars($creator["orcId"], ENT_COMPAT, 'UTF-8')));
+				$node->setAttribute('nameIdentifierScheme', DATACITE_NAME_IDENTIFIER_SCHEME);
+				$node->setAttribute('schemeURI', DATACITE_ORCID_SCHEME_URI);
+			}
+
 			$creatorsNode->appendChild($creatorNode);
 		}
 		return $creatorsNode;
@@ -276,6 +357,7 @@ class DataciteXmlFilter extends NativeExportFilter {
 	 */
 	function createTitlesNode($doc, $issue, $article, $galley, $galleyFile, $objectLocalePrecedence) {
 		$deployment = $this->getDeployment();
+
 		// Get an array of localized titles.
 		$alternativeTitle = null;
 		switch (true) {
@@ -292,12 +374,15 @@ class DataciteXmlFilter extends NativeExportFilter {
 		}
 		// Order titles by locale precedence.
 		$titles = $this->getTranslationsByPrecedence($titles, $objectLocalePrecedence);
+
 		// We expect at least one title.
 		assert(count($titles)>=1);
 		$titlesNode = $doc->createElementNS($deployment->getNamespace(), 'titles');
+
 		// Start with the primary object locale.
 		$primaryTitle = array_shift($titles);
 		$titlesNode->appendChild($node = $doc->createElementNS($deployment->getNamespace(), 'title', htmlspecialchars(PKPString::html2text($primaryTitle), ENT_COMPAT, 'UTF-8')));
+
 		// Then let the translated titles follow.
 		foreach($titles as $locale => $title) {
 			$titlesNode->appendChild($node = $doc->createElementNS($deployment->getNamespace(), 'title', htmlspecialchars(PKPString::html2text($title), ENT_COMPAT, 'UTF-8')));
@@ -447,6 +532,7 @@ class DataciteXmlFilter extends NativeExportFilter {
 		$deployment = $this->getDeployment();
 		$context = $deployment->getContext();
 		$alternateIdentifiersNode = $doc->createElementNS($deployment->getNamespace(), 'alternateIdentifiers');
+
 		// Proprietary ID
 		$proprietaryId = $context->getId();
 		if ($issue) $proprietaryId .= '-' . $issue->getId();
@@ -454,6 +540,7 @@ class DataciteXmlFilter extends NativeExportFilter {
 		if ($galley) $proprietaryId .= '-g' . $galley->getId();
 		$alternateIdentifiersNode->appendChild($node = $doc->createElementNS($deployment->getNamespace(), 'alternateIdentifier', $proprietaryId));
 		$node->setAttribute('alternateIdentifierType', DATACITE_IDTYPE_PROPRIETARY);
+
 		// ISSN - for issues only.
 		if (!isset($article) && !isset($galley)) {
 			$onlineIssn = $context->getSetting('onlineIssn');
@@ -486,7 +573,7 @@ class DataciteXmlFilter extends NativeExportFilter {
 				// Part of: article.
 				assert(isset($article));
 				$doi = $article->getStoredPubId('doi');
-				if (!empty($doi)) {
+				if (!empty($doi))  {
 					$relatedIdentifiersNode->appendChild($node = $doc->createElementNS($deployment->getNamespace(), 'relatedIdentifier', htmlspecialchars($doi, ENT_COMPAT, 'UTF-8')));
 					$node->setAttribute('relatedIdentifierType', DATACITE_IDTYPE_DOI);
 					$node->setAttribute('relationType', DATACITE_RELTYPE_ISPARTOF);
@@ -514,6 +601,17 @@ class DataciteXmlFilter extends NativeExportFilter {
 					}
 					unset($relatedGalley, $doi);
 				}
+
+				// Zenon-ID
+				$zenonId = $article->getStoredPubId('other::zenon');
+				if (!empty($zenonId )) {
+					$zenonUrl = "https://zenon.dainst.org/Record/" . $zenonId;
+					$relatedIdentifiersNode->appendChild($node = $doc->createElementNS($deployment->getNamespace(), 'relatedIdentifier', htmlspecialchars($zenonUrl, ENT_COMPAT, 'UTF-8')));
+					$node->setAttribute('relatedIdentifierType', DATACITE_IDTYPE_URL);
+					$node->setAttribute('relationType', DATACITE_RELTYPE_HASMETADATA);
+				}
+				unset($zenonId);
+
 				break;
 			case isset($issue):
 				// Parts: articles in this issue.
@@ -589,7 +687,7 @@ class DataciteXmlFilter extends NativeExportFilter {
 	 * @param $doc DOMDocument
 	 * @param $issue Issue
 	 * @param $article PublishedArticle
-	 * @param $galley Alley
+	 * @param $galley Galley
 	 * @param $galleyFile SubmissionFile
 	 * @param $objectLocalePrecedence array
 	 * @return DOMElement|null Can be null if a size
@@ -598,6 +696,16 @@ class DataciteXmlFilter extends NativeExportFilter {
 	function createDescriptionsNode($doc, $issue, $article, $galley, $galleyFile, $objectLocalePrecedence) {
 		$deployment = $this->getDeployment();
 		$descriptions = array();
+
+		// get series information for articles:
+		if (isset($article)) {
+			// Articles and galleys.
+			$descriptions[DATACITE_DESCTYPE_SERIESINFO] = $this->getIssueInformation($issue, $objectLocalePrecedence);
+		}
+
+		// get series information for issue ?
+
+		// get abstract:
 		switch (true) {
 			case isset($galley):
 				if (is_a($galleyFile, 'SupplementaryFile')) {
@@ -617,10 +725,8 @@ class DataciteXmlFilter extends NativeExportFilter {
 			default:
 				assert(false);
 		}
-		if (isset($article)) {
-			// Articles and galleys.
-			$descriptions[DATACITE_DESCTYPE_SERIESINFO] = $this->getIssueInformation($issue, $objectLocalePrecedence);
-		}
+
+		// create description node:
 		$descriptionsNode = null;
 		if (!empty($descriptions)) {
 			$descriptionsNode = $doc->createElementNS($deployment->getNamespace(), 'descriptions');

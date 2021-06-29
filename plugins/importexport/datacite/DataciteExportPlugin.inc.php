@@ -18,6 +18,7 @@ import('classes.plugins.DOIPubIdExportPlugin');
 // DataCite API
 define('DATACITE_API_RESPONSE_OK', 201);
 define('DATACITE_API_URL', 'https://mds.datacite.org/');
+define('DATACITE_API_URL_TEST', 'https://mds.test.datacite.org/');
 
 // Test DOI prefix
 define('DATACITE_API_TESTPREFIX', '10.5072');
@@ -198,6 +199,7 @@ class DataciteExportPlugin extends DOIPubIdExportPlugin {
 	 */
 	function depositXML($object, $context, $filename) {
 		$request = Application::getRequest();
+
 		// Get the DOI and the URL for the object.
 		$doi = $object->getStoredPubId('doi');
 		assert(!empty($doi));
@@ -206,6 +208,7 @@ class DataciteExportPlugin extends DOIPubIdExportPlugin {
 		}
 		$url = $this->_getObjectUrl($request, $context, $object);
 		assert(!empty($url));
+
 		// Prepare HTTP session.
 		$curlCh = curl_init();
 		if ($httpProxyHost = Config::getVar('proxy', 'http_host')) {
@@ -217,13 +220,16 @@ class DataciteExportPlugin extends DOIPubIdExportPlugin {
 		}
 		curl_setopt($curlCh, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($curlCh, CURLOPT_POST, true);
+
 		// Set up basic authentication.
 		$username = $this->getSetting($context->getId(), 'username');
 		$password = $this->getSetting($context->getId(), 'password');
 		curl_setopt($curlCh, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
 		curl_setopt($curlCh, CURLOPT_USERPWD, "$username:$password");
+
 		// Set up SSL.
 		curl_setopt($curlCh, CURLOPT_SSL_VERIFYPEER, false);
+
 		// Transmit meta-data.
 		assert(is_readable($filename));
 		$payload = file_get_contents($filename);
@@ -313,6 +319,7 @@ class DataciteExportPlugin extends DOIPubIdExportPlugin {
 					$this->usage($scriptName);
 				}
 				break;
+
 			case 'register':
 				$resultErrors = array();
 				foreach ($objects as $object) {
