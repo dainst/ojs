@@ -12,12 +12,13 @@
 {assign var=enableObjectDoi value=$pubIdPlugin->getSetting($currentContext->getId(), "enable`$pubObjectType`Doi")}
 {if $enableObjectDoi}
 	{fbvFormArea id="pubIdDOIFormArea" class="border" title="plugins.pubIds.doi.editor.doi"}
+		<
 	{if $pubObject->getStoredPubId($pubIdPlugin->getPubIdType())}
 		{fbvFormSection}
 			<p class="pkp_help">{translate key="plugins.pubIds.doi.editor.assignDoi.assigned" pubId=$pubObject->getStoredPubId($pubIdPlugin->getPubIdType())}</p>
 		{/fbvFormSection}
 	{else}
-		{assign var=pubId value=$pubIdPlugin->getPubId($pubObject)}
+		{assign var=pubId value=$DOIPubIdPlugin->getPubId($pubObject)}
 		{if !$canBeAssigned}
 			{fbvFormSection}
 				{if !$pubId}
