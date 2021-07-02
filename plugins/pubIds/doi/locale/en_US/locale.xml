@@ -40,6 +40,7 @@
 	<message key="plugins.pubIds.doi.manager.settings.doiSuffixDefault">Use default patterns.</message>
 	<message key="plugins.pubIds.doi.manager.settings.doiSuffixDefault.description"><![CDATA[%j.v%vi%i for issues<br />%j.v%vi%i.%a for articles<br />%j.v%vi%i.%a.g%g for galleys.]]></message>
 	<message key="plugins.pubIds.doi.manager.settings.doiSuffixCustomIdentifier">Enter an individual DOI suffix for each published item. You'll find an additional DOI input field on each item's meta-data page.</message>
+	<message key="plugins.pubIds.doi.manager.settings.doiSuffixRandomIdentifier">This option generates an 8-digit, randomly generated ID (consisting of numbers and letters).</message>
 	<message key="plugins.pubIds.doi.manager.settings.doiIssueSuffixPatternRequired">Please enter the DOI suffix pattern for issues.</message>
 	<message key="plugins.pubIds.doi.manager.settings.doiSubmissionSuffixPatternRequired">Please enter the DOI suffix pattern for articles.</message>
 	<message key="plugins.pubIds.doi.manager.settings.doiRepresentationSuffixPatternRequired">Please enter the DOI suffix pattern for galleys.</message>
@@ -59,7 +60,7 @@
 	<message key="plugins.pubIds.doi.editor.doiObjectTypeRepresentation">galley</message>
 	<message key="plugins.pubIds.doi.editor.customSuffixMissing">The DOI cannot be assigned because the custom suffix is missing.</message>
 	<message key="plugins.pubIds.doi.editor.patternNotResolved">The DOI cannot be assigned because it contains an unresolved pattern.</message>
-	<message key="plugins.pubIds.doi.editor.canBeAssigned">What you see is a preview of the DOI. Select the checkbox and save the form to assign the DOI.</message>
+	<message key="plugins.pubIds.doi.editor.canBeAssigned">Activate the checkbox and save the form in order to assign a DOI with a DOI prefix and a randomly generated DOI suffix (8 digits) to the object.</message>
 	<message key="plugins.pubIds.doi.editor.assigned">The DOI is assigned to this {$pubObjectType}.</message>
 	<message key="plugins.pubIds.doi.editor.doiSuffixCustomIdentifierNotUnique">The given DOI suffix is already in use for another published item. Please enter a unique DOI suffix for each item.</message>
 	<message key="plugins.pubIds.doi.editor.clearObjectsDoi">Clear DOI</message>
