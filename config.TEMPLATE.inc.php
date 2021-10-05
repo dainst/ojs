@@ -26,7 +26,7 @@
 
 ; Set this to On once the system has been installed
 ; (This is generally done automatically by the installer)
-installed = Off
+installed = On
 
 ; The canonical URL to the OJS installation (excluding the trailing slash)
 base_url = "https://publications.dainst.org/journals"
@@ -128,11 +128,11 @@ sitewide_privacy_statement = Off
 
 [database]
 
-driver = mysql
-host = localhost
-username = ojs
-password = ojs
-name = ojs
+driver = mysqli
+host = db_host
+username = db_user_name
+password = db_user_pw
+name = db_name
 ; Set the non-standard port and/or socket, if used
 ; port = 3306
 ; unix_socket = /var/run/mysqld/mysqld.sock
@@ -154,13 +154,9 @@ debug = Off
 ; - xcache: Use the xcache variable store
 ; - apc: Use the APC variable store
 ; - none: Use no caching.
-; WARNING: This setting is currently NOT RECOMMENDED.
-; (https://github.com/pkp/pkp-lib/issues/3304)
 object_cache = none
 
 ; Enable memcache support
-; WARNING: This setting is currently NOT RECOMMENDED.
-; (https://github.com/pkp/pkp-lib/issues/3304)
 memcache_hostname = localhost
 memcache_port = 11211
 
@@ -189,7 +185,7 @@ web_cache_hours = 1
 [i18n]
 
 ; Default locale
-locale = en_US
+locale = de_DE
 
 ; Client output/input character set
 client_charset = utf-8
@@ -198,11 +194,11 @@ client_charset = utf-8
 ; Must be set to "Off" if not supported by the database server
 ; If enabled, must be the same character set as "client_charset"
 ; (although the actual name may differ slightly depending on the server)
-connection_charset = Off
+connection_charset = utf8
 
 ; Database storage character set
 ; Must be set to "Off" if not supported by the database server
-database_charset = Off
+database_charset = utf8
 
 
 ;;;;;;;;;;;;;;;;;
@@ -214,13 +210,13 @@ database_charset = Off
 ; Complete path to directory to store uploaded files
 ; (This directory should not be directly web-accessible)
 ; Windows users should use forward slashes
-files_dir = files
+files_dir = /data/files
 
 ; Path to the directory to store public uploaded files
 ; (This directory should be web-accessible and the specified path
 ; should be relative to the base OJS directory)
 ; Windows users should use forward slashes
-public_files_dir = public
+public_files_dir = /data/public
 
 ; Permissions mask for created files and directories
 umask = 0022
@@ -320,10 +316,10 @@ allowed_html = "a[href|target|title],em,strong,cite,code,ul,ol,li[class],dl,dt,d
 
 ; Allow envelope sender to be specified
 ; (may not be possible with some server configurations)
-; allow_envelope_sender = On
+; allow_envelope_sender = Off
 
 ; Default envelope sender to use if none is specified elsewhere
-; default_envelope_sender = dev.idai.publications@dainst.de
+; default_envelope_sender = my_address@my_host.com
 
 ; Force the default envelope sender (if present)
 ; This is useful if setting up a site-wide no-reply address
