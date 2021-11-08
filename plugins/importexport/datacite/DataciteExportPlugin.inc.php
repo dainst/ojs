@@ -208,9 +208,9 @@ class DataciteExportPlugin extends DOIPubIdExportPlugin {
 			$doi = PKPString::regexp_replace('#^[^/]+/#', DATACITE_API_TESTPREFIX . '/', $doi);
 		}
 
-		// For testing (localhost/ not valid url for DataCite):
-		// $url = $this->_getObjectUrl($request, $context, $object);
-		$url = "https://test.publications.dainst.org/journals/aa/article/view/2263";
+		$url = $this->_getObjectUrl($request, $context, $object);
+		// For testing (localhost/ not valid url for DataCite)
+		// $url = "https://test.publications.dainst.org/journals/aa/article/view/2263";
 
 		// Prepare HTTP session.
 		$curlCh = curl_init();
