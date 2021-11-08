@@ -17,7 +17,7 @@ import('classes.plugins.DOIPubIdExportPlugin');
 
 // DataCite API
 define('DATACITE_API_RESPONSE_OK', 201);
-define('DATACITE_API_URL', 'https://mds.datacite.org/');
+define('DATACITE_API_URL', 'https://mds.test.datacite.org/');
 define('DATACITE_API_URL_TEST', 'https://mds.test.datacite.org/');
 
 // Test DOI prefix
@@ -97,6 +97,7 @@ class DataciteExportPlugin extends DOIPubIdExportPlugin {
 	 * @copydoc PubObjectsExportPlugin::executeExportAction()
 	 */
 	function executeExportAction($request, $objects, $filter, $tab, $objectsFileNamePart, $noValidation = null) {
+
 		$context = $request->getContext();
 		$path = array('plugin', $this->getName());
 
@@ -206,8 +207,10 @@ class DataciteExportPlugin extends DOIPubIdExportPlugin {
 		if ($this->isTestMode($context)) {
 			$doi = PKPString::regexp_replace('#^[^/]+/#', DATACITE_API_TESTPREFIX . '/', $doi);
 		}
-		$url = $this->_getObjectUrl($request, $context, $object);
-		assert(!empty($url));
+
+		// For testing (localhost/ not valid url for DataCite):
+		// $url = $this->_getObjectUrl($request, $context, $object);
+		$url = "https://test.publications.dainst.org/journals/aa/article/view/2263";
 
 		// Prepare HTTP session.
 		$curlCh = curl_init();
@@ -239,10 +242,12 @@ class DataciteExportPlugin extends DOIPubIdExportPlugin {
 		curl_setopt($curlCh, CURLOPT_POSTFIELDS, $payload);
 		$result = true;
 		$response = curl_exec($curlCh);
+
 		if ($response === false) {
 			$result = array(array('plugins.importexport.common.register.error.mdsError', "Registering DOI $doi: No response from server."));
 		} else {
 			$status = curl_getinfo($curlCh, CURLINFO_HTTP_CODE);
+
 			if ($status != DATACITE_API_RESPONSE_OK) {
 				$result = array(array('plugins.importexport.common.register.error.mdsError', "Registering DOI $doi: $status - $response"));
 			}
@@ -258,6 +263,7 @@ class DataciteExportPlugin extends DOIPubIdExportPlugin {
 				$result = array(array('plugins.importexport.common.register.error.mdsError', 'Registering DOI $doi: No response from server.'));
 			} else {
 				$status = curl_getinfo($curlCh, CURLINFO_HTTP_CODE);
+
 				if ($status != DATACITE_API_RESPONSE_OK) {
 					$result = array(array('plugins.importexport.common.register.error.mdsError', "Registering DOI $doi: $status - $response"));
 				}

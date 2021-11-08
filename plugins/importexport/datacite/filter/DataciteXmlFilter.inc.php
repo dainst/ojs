@@ -22,6 +22,7 @@ define('DATACITE_ORCID_SCHEME_URI', 'https://orcid.org');
 // Title types
 define('DATACITE_TITLETYPE_TRANSLATED', 'TranslatedTitle');
 define('DATACITE_TITLETYPE_ALTERNATIVE', 'AlternativeTitle');
+define('DATACITE_TITLETYPE_SUBTITLE', 'Subtitle');
 
 // Date types
 define('DATACITE_DATE_AVAILABLE', 'Available');
@@ -56,6 +57,7 @@ import('lib.pkp.plugins.importexport.native.filter.NativeExportFilter');
 
 
 class DataciteXmlFilter extends NativeExportFilter {
+
 	/**
 	 * Constructor
 	 * @param $filterGroup FilterGroup
@@ -99,6 +101,7 @@ class DataciteXmlFilter extends NativeExportFilter {
 		/* Get all objects
 		-----------------------------------------*/
 		$issue = $article = $galley = $galleyFile = null;
+
 		if (is_a($pubObject, 'Issue')) {
 			$issue = $pubObject;
 			if (!$cache->isCached('issues', $issue->getId())) {
@@ -196,11 +199,9 @@ class DataciteXmlFilter extends NativeExportFilter {
 		if ($relatedIdentifiersNode) $rootNode->appendChild($relatedIdentifiersNode);
 
 		/* Sizes
-		-----------------------------------------
+		-----------------------------------------*/
 		$sizesNode = $this->createSizesNode($doc, $issue, $article, $galley, $galleyFile);
 		if ($sizesNode) $rootNode->appendChild($sizesNode);
-
-		*/
 
 		/* Formats
 		-----------------------------------------*/
@@ -366,6 +367,7 @@ class DataciteXmlFilter extends NativeExportFilter {
 				break;
 			case isset($article):
 				$titles = $article->getTitle(null);
+				$subtitles = $article->getSubtitle(null);
 				break;
 			case isset($issue):
 				$titles = $this->getIssueInformation($issue);
@@ -379,20 +381,26 @@ class DataciteXmlFilter extends NativeExportFilter {
 		assert(count($titles)>=1);
 		$titlesNode = $doc->createElementNS($deployment->getNamespace(), 'titles');
 
-		// Start with the primary object locale.
-		$primaryTitle = array_shift($titles);
-		$titlesNode->appendChild($node = $doc->createElementNS($deployment->getNamespace(), 'title', htmlspecialchars(PKPString::html2text($primaryTitle), ENT_COMPAT, 'UTF-8')));
-
-		// Then let the translated titles follow.
+		// Add titles:
 		foreach($titles as $locale => $title) {
 			$titlesNode->appendChild($node = $doc->createElementNS($deployment->getNamespace(), 'title', htmlspecialchars(PKPString::html2text($title), ENT_COMPAT, 'UTF-8')));
-			$node->setAttribute('titleType', DATACITE_TITLETYPE_TRANSLATED);
+			$validLocalKey = preg_replace("/_/", "-", $locale);
+			$node->setAttribute('xml:lang', $validLocalKey);
 		}
+		// add subtitle:
+		if (!empty($subtitles)) {
+			$titlesNode->appendChild($node = $doc->createElementNS($deployment->getNamespace(), 'title', htmlspecialchars(PKPString::html2text($title), ENT_COMPAT, 'UTF-8')));
+			$node->setAttribute('titleType', DATACITE_TITLETYPE_SUBTITLE);
+			$validLocalKey = preg_replace("/_/", "-", $objectLocalePrecedence);
+			$node->setAttribute('xml:lang', $validLocalKey);
+		};
+
 		// And finally the alternative title.
 		if (!empty($alternativeTitle)) {
 			$titlesNode->appendChild($node = $doc->createElementNS($deployment->getNamespace(), 'title', htmlspecialchars(PKPString::html2text($alternativeTitle), ENT_COMPAT, 'UTF-8')));
 			$node->setAttribute('titleType', DATACITE_TITLETYPE_ALTERNATIVE);
 		}
+
 		return $titlesNode;
 	}
 
@@ -418,11 +426,14 @@ class DataciteXmlFilter extends NativeExportFilter {
 						$dates[DATACITE_DATE_CREATED] = $createdDate;
 					}
 				}
-				// Accepted date (for galleys files): file uploaded.
+
+				/* SKIP Accepted date (for galleys files): file uploaded.
 				$acceptedDate = $galleyFile->getDateUploaded();
 				if (!empty($acceptedDate)) {
 					$dates[DATACITE_DATE_ACCEPTED] = $acceptedDate;
 				}
+				*/
+
 				// Last modified date (for galley files): file modified date.
 				$lastModified = $galleyFile->getDateModified();
 				if (!empty($lastModified)) {
@@ -435,7 +446,7 @@ class DataciteXmlFilter extends NativeExportFilter {
 				if (!empty($submittedDate)) {
 					$dates[DATACITE_DATE_SUBMITTED] = $submittedDate;
 				}
-				// Accepted date: the last editor accept decision date
+				/* SKIP: Accepted date: the last editor accept decision date
 				$editDecisionDao = DAORegistry::getDAO('EditDecisionDAO');
 				$editDecisions = $editDecisionDao->getEditorDecisions($article->getId());
 				foreach (array_reverse($editDecisions) as $editDecision) {
@@ -443,6 +454,7 @@ class DataciteXmlFilter extends NativeExportFilter {
 						$dates[DATACITE_DATE_ACCEPTED] = $editDecision['dateDecided'];
 					}
 				}
+				*/
 				// Last modified date (for articles): last$lastModifiede.
 				$lastModified = $article->getLastModified();
 				if (!empty($lastModified)) {

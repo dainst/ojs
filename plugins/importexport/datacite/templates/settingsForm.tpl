@@ -15,6 +15,7 @@
 	{rdelim});
 </script>
 <form class="pkp_form" id="dataciteSettingsForm" method="post" action="{url router=$smarty.const.ROUTE_COMPONENT op="manage" plugin="DataciteExportPlugin" category="importexport" verb="save"}">
+
 	{if $doiPluginSettingsLinkAction}
 		{fbvFormArea id="doiPluginSettingsLink"}
 			{fbvFormSection}
@@ -22,6 +23,13 @@
 			{/fbvFormSection}
 		{/fbvFormArea}
 	{/if}
+
+	<div style = "background-color: #ededed; border: 0.1vw solid red; padding: 1vw;">
+		<strong>Hinweis</strong>
+		<p style = "margin:0;">Bitte nehmen Sie keine Änderungen an den Plugin-Settings oder DOI-Einstellungen vor. Wenden Sie sich dafür an ZWD / Redaktion der Zentrale</p>
+		<p style = "margin:0;">Bitte registrieren Sie nicht selbstständig DOIs. Für das DOI-Management ist die ZWD / Redaktion der Zentrale zuständig.</p>
+	</div>
+
 	{fbvFormArea id="dataciteSettingsFormArea"}
 		<p class="pkp_help">{translate key="plugins.importexport.datacite.settings.description"}</p>
 		<p class="pkp_help">{translate key="plugins.importexport.datacite.intro"}</p>
