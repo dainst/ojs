@@ -28,7 +28,6 @@ class DNBInfoSender extends ScheduledTask {
 	function __construct($args) {
 		PluginRegistry::loadCategory('importexport');
 		$plugin = PluginRegistry::getPlugin('importexport', 'DNBExportPlugin'); /* @var $plugin DNBExportPlugin */
-		
 		$this->_plugin = $plugin;
 
 		if (is_a($plugin, 'DNBExportPlugin')) {
@@ -63,6 +62,7 @@ class DNBInfoSender extends ScheduledTask {
 		}
 
 		$filter = $plugin->getSubmissionFilter();
+		$articleDao = DAORegistry::getDAO('ArticleDAO');
 		$genreDao = DAORegistry::getDAO('GenreDAO');
 		$fileManager = new FileManager();
 
@@ -70,8 +70,6 @@ class DNBInfoSender extends ScheduledTask {
 		$journals = $this->_getJournals();
 		$errors = array();
 		foreach ($journals as $journal) {
-			// load pubIds for this journal (they are currently not loaded in the base class)
-			PluginRegistry::loadCategory('pubIds', true, $journal->getId());
 			// Get not deposited articles
 			$notDepositedArticles = $plugin->getUnregisteredArticles($journal);
 			if (!empty($notDepositedArticles)) {
@@ -88,19 +86,19 @@ class DNBInfoSender extends ScheduledTask {
 				}
 				$journalExportPath = $result;
 
-				foreach ($notDepositedArticles as $submission) {
-					if (is_a($submission, 'Submission')) {
+				foreach ($notDepositedArticles as $article) {
+					if (is_a($article, 'PublishedArticle')) {
 						$issue = null;
 						$galleys = array();
 						// Get issue and galleys, and check if the article can be exported
-						if (!$plugin->canBeExported($submission, $issue, $galleys)) {
-							$errors[] = array('plugins.importexport.dnb.export.error.articleCannotBeExported', $submission->getId());
+						if (!$plugin->canBeExported($article, $issue, $galleys)) {
+							$errors[] = array('plugins.importexport.dnb.export.error.articleCannotBeExported', $article->getId());
 							// continue with other articles
 							continue;
 						}
 
 						$fullyDeposited = true;
-						$submissionId = $submission->getId();
+						$articleId = $article->getId();
 						foreach ($galleys as $galley) {
 							// check if it is a full text
 							$galleyFile = $galley->getFile();
@@ -130,9 +128,7 @@ class DNBInfoSender extends ScheduledTask {
 						}
 						if ($fullyDeposited) {
 							// Update article status
-							$submissionDao = DAORegistry::getDAO('SubmissionDAO');
-							$submission->setData($plugin->getDepositStatusSettingName(), DNB_STATUS_DEPOSITED);
-							$submissionDao->updateObject($submission);
+							$articleDao->updateSetting($articleId, $plugin->getDepositStatusSettingName(), DNB_STATUS_DEPOSITED, 'string');
 						}
 					}
 				}

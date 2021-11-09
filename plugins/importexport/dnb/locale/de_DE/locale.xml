@@ -60,15 +60,12 @@
 	<message key="plugins.importexport.dnb.deposit.error.fileUploadFailed">Das Hochladen per SFTP ist fehlgeschlagen: {$param}.</message>
 	<message key="plugins.importexport.dnb.deposit.error.fileUploadFailed.param">Die Paketdatei {$package} des Artikels {$articleId} konnte nicht hochgeladen werden. Fehler: {$error}</message>
 	<message key="plugins.importexport.dnb.export.error.curlError">Bei der Ausführung von curl ist ein Fehler aufgetreten: {$param}. Export abgebrochen!</message>
-	<message key="plugins.importexport.dnb.export.error.remoteGalleyContentTypeNotValid">Der entfernte Server meldet den nicht akzeptierten Inhaltstyp: {$param}. Export aller Artikel abgebrochen!</message>
+	<message key="plugins.importexport.dnb.export.error.remoteGalleyContentTypeNotValid">Der entfernte Server meldet den nicht akzeptierten Inhaltstyp: {$param}. Export aller Artikel abgebrochen!</message>	
 	<message key="plugins.importexport.dnb.export.error.remoteFileMimeTypeNotValid">Mime type der Galley mit der ID {$param} nicht akzeptiert. Export abgebrochen!</message>
-	<message key="plugins.importexport.dnb.export.error.urnSet">Das DNB Export Plugin exportiert keine Artikel mit URNs auf Artikelebene. Bitte wenden Sie sich an die Deutsche Nationalbibliothek für mehr Informaitonen. </message>
+	<message key="plugins.importexport.dnb.export.error.urnSet">Das DNB Export Plugin exportiert keine Artikel mit URNs auf Artikelebene. Bitte wenden Sie sich an die Deutsche Nationalbibliothek für mehr Informaitonen. </message>	
 	<message key="plugins.importexport.dnb.export.error.galleyFileNotFound">Die Fahnendatei {$param} konnte nicht gefunden werden.</message>
 	<message key="plugins.importexport.dnb.export.error.galleyFileNoCopy">Die Fahnendatei {$param} kopiert werden.</message>
 	<message key="plugins.importexport.dnb.export.error.galleyFileNoCopy.param">{$sourceGalleyFilePath} konnte nicht nach {$targetGalleyFilePath}</message>
-	<message key="plugins.importexport.dnb.export.error.firestAuthorNotRegistred.param">Fehler beim Export der Fahne {$submissionId}. {$msg}</message>
-	<message key="plugins.importexport.dnb.export.error.firestAuthorNotRegistred">{$param} Der Erstautor der Fahe muss bei dieser Zeitschrift als Autor registriert sein.</message>
-
 	<message key="plugins.importexport.dnb.senderTask.name">DNB automatic deposit task</message>
 
 </locale>

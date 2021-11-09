@@ -1,8 +1,8 @@
 =============================================================
 === OJS DNB-Export-Plug-In
-=== Version: 1.4.1
+=== Version: 1.3.2
 === Autor: Bozana Bokan, Ronald Steffen
-=== Letzte Änderung: 16. August 2021
+=== Letzte Änderung: 29. Januar 2021
 =============================================================
 
 Über
@@ -18,8 +18,8 @@ Das Plug-In ist unter GNU General Public License v2 lizenziert. Sehen Sie die Da
 
 Systemanforderungen
 -------------------
-Dieses Plug-In Verison ist kompatibel mit...
- - OJS 3.2.1
+Dieses Plug-In ist kompatibel mit...
+ - OJS 3.1.1, 3.1.2
 
 TAR-Programm wird benötigt und es muss in der Datei config.inc.php konfiguriert werden.
 
@@ -32,12 +32,7 @@ Installation über die OJS-Benutzeroberfläche:
  - Installation des Plugins im Managementbereich von OJS (Einstellungen -> Website -> Plugins -> „Ein neues Plugin hochladen“ -> dnb-[Version].tar.gz hochladen)
 
 Installation über die Kommandozeile ohne Git:
- - Download des Archivs in der gewünschten Version von https://github.com/ojsde/dnb. 
-   Bitte immer die neuste Revisionsnummer (.x) des Plugins für die installierten OJS Version benutzen:
-   | OJS version | plugin version    |
-   | ----------- | ----------------- |
-   | 3.2         | 1.4.x             |
-   | 3.3         | not yet published |
+ - Download des Archivs in der gewünschten Version von https://github.com/ojsde/dnb
  - Entpacken des Plugins in das Verzeichnis plugins/importexport
  - ggf. Umbenennen des Hauptverzeichnisses in "dnb"
  - Aktualisierung der Datenbank (es empfiehlt sich, zuerst ein Backup der Datenbank zu erstellen),
@@ -68,7 +63,4 @@ Bitte beachten Sie, dass das Passwort wegen Anforderungen des DNB-Dienstes im Kl
 
 Kontakt/Support
 ---------------
-
-Bitte beachten Sie auch die Dokumentation im Ordner `docs` oder unter https://ojs-de.net/support/anleitungen/dnb-plugin.
-
 Dokumentation, Fehlerauflistung und Updates können auf dieser Plug-Ins-Startseite gefunden werden <http://github.com/ojsde/dnb>.
