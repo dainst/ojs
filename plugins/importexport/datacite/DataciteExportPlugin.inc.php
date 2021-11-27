@@ -17,7 +17,7 @@ import('classes.plugins.DOIPubIdExportPlugin');
 
 // DataCite API
 define('DATACITE_API_RESPONSE_OK', 201);
-define('DATACITE_API_URL', 'https://mds.test.datacite.org/');
+define('DATACITE_API_URL', 'https://mds.datacite.org/');
 define('DATACITE_API_URL_TEST', 'https://mds.test.datacite.org/');
 
 // Test DOI prefix
