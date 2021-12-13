@@ -17,7 +17,6 @@
 import('lib.pkp.plugins.importexport.native.filter.NativeExportFilter');
 define('XML_NON_VALID_CHARCTERS', 100);
 define('URN_SET', 101);
-define('MESSAGE_URN_SET','An URN has been set.'); // @RS refine
 
 class DNBXmlFilter extends NativeExportFilter {
 	/**
@@ -80,7 +79,7 @@ class DNBXmlFilter extends NativeExportFilter {
 		}
 
 		// abort export in case any URN is set, this is a special case that has to be discussed with DNB and implmented differently in each case
-		$articleURN = $article->getStoredPubId('other::urnDNB');		
+		$articleURN = $article->getStoredPubId('other::urnDNB');
 		if (empty($articleURN)) $articleURN = $article->getStoredPubId('other::urn');
 		if (!empty($articleURN)) {
 		    throw new ErrorException(MESSAGE_URN_SET, URN_SET);
@@ -177,7 +176,7 @@ class DNBXmlFilter extends NativeExportFilter {
 		}
 		// first author
 		$datafield100 = $this->createDatafieldNode($doc, $recordNode, '100', '1', ' ');
-		$this->createSubfieldNode($doc, $datafield100, 'a', $firstAuthor->getFullName(false, true));
+		$this->createSubfieldNode($doc, $datafield100, 'a', $firstAuthor->getFullName(true));
 		$this->createSubfieldNode($doc, $datafield100, '4', 'aut');
 		// title
 		$title = $article->getTitle($galley->getLocale());
@@ -215,10 +214,10 @@ class DNBXmlFilter extends NativeExportFilter {
 			//remove line breaks in case DNB doesn't like them (they are allowed in XML 1.0 spec)
 			$abstract = preg_replace("#[\s\n\r]+#",' ',$abstract); 
 			if (strlen($abstract) > 999)  {
-				$abstract = mb_substr($abstract, 0, 996,"UTF-8");
+				$abstract = substr($abstract, 0, 996);
 				$abstract .= '...';
 			}
-			$abstractURL = $request->url($journal->getPath(), 'article', 'view', array($article->getId()));
+			$abstractURL = $request->url(null, 'article', 'view', array($article->getId()));
 			$datafield520 = $this->createDatafieldNode($doc, $recordNode, '520', '3', ' ');
 			$this->createSubfieldNode($doc, $datafield520, 'a', $abstract);
 			$this->createSubfieldNode($doc, $datafield520, 'u', $abstractURL);
@@ -231,7 +230,7 @@ class DNBXmlFilter extends NativeExportFilter {
 			if (empty($copyrightNotice)) $copyrightNotice = $journal->getSetting('copyrightNotice', $journal->getPrimaryLocale());
 			if (!empty($copyrightNotice)) {
 				// link to the article view page where the copyright notice can be found
-			    $licenseURL = $request->url($journal->getPath(), 'article', 'view', array($article->getId()));
+				$licenseURL = $request->url(null, 'article', 'view', array($article->getId()));
 			}
 		}
 		if (!empty($licenseURL)) {
@@ -251,13 +250,13 @@ class DNBXmlFilter extends NativeExportFilter {
 		// other authors
 		foreach ((array) $authors as $author) {
 			$datafield700 = $this->createDatafieldNode($doc, $recordNode, '700', '1', ' ');
-			$this->createSubfieldNode($doc, $datafield700, 'a', $author->getFullName(false, true));
+			$this->createSubfieldNode($doc, $datafield700, 'a', $author->getFullName(true));
 			$this->createSubfieldNode($doc, $datafield700, '4', 'aut');
 		}
 		// translators
 		foreach ((array) $translators as $translator) {
 		    $datafield700 = $this->createDatafieldNode($doc, $recordNode, '700', '1', ' ');
-		    $this->createSubfieldNode($doc, $datafield700, 'a', $translator->getFullName(false, true));
+		    $this->createSubfieldNode($doc, $datafield700, 'a', $translator->getFullName(true));
 		    $this->createSubfieldNode($doc, $datafield700, '4', 'trl');
 		}
 		
@@ -280,7 +279,7 @@ class DNBXmlFilter extends NativeExportFilter {
 		$journalDatafield773 = $this->createDatafieldNode($doc, $recordNode, '773', '1', '8');
 		$this->createSubfieldNode($doc, $journalDatafield773, 'x', $issn);
 		// file data
-		$galleyURL = $request->url($journal->getPath(), 'article', 'view', array($article->getId(), $galley->getId()));
+		$galleyURL = $request->url(null, 'article', 'view', array($article->getId(), $galley->getId()));
 		$datafield856 = $this->createDatafieldNode($doc, $recordNode, '856', '4', ' ');
 		$this->createSubfieldNode($doc, $datafield856, 'u', $galleyURL);
 		$this->createSubfieldNode($doc, $datafield856, 'q', $this->_getGalleyFileType($galley));
