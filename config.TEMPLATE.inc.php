@@ -26,10 +26,10 @@
 
 ; Set this to On once the system has been installed
 ; (This is generally done automatically by the installer)
-installed = On
+installed = Off
 
 ; The canonical URL to the OJS installation (excluding the trailing slash)
-base_url = "https://publications.dainst.org/journals"
+base_url = base_url
 
 ; Session cookie name
 session_cookie_name = OJSSID
