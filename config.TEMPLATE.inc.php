@@ -26,10 +26,10 @@
 
 ; Set this to On once the system has been installed
 ; (This is generally done automatically by the installer)
-installed = On
+installed = Off
 
 ; The canonical URL to the OJS installation (excluding the trailing slash)
-base_url = "https://publications.dainst.org/journals"
+base_url = base_url
 
 ; Session cookie name
 session_cookie_name = OJSSID
@@ -87,7 +87,7 @@ allow_url_fopen = Off
 ; Generate RESTful URLs using mod_rewrite.  This requires the
 ; rewrite directive to be enabled in your .htaccess or httpd.conf.
 ; See FAQ for more details.
-restful_urls = Off
+restful_urls = On
 
 ; Allow the X_FORWARDED_FOR header to override the REMOTE_ADDR as the source IP
 ; Set this to "On" if you are behind a reverse proxy and you control the X_FORWARDED_FOR
@@ -210,13 +210,13 @@ database_charset = utf8
 ; Complete path to directory to store uploaded files
 ; (This directory should not be directly web-accessible)
 ; Windows users should use forward slashes
-files_dir = /data/files
+files_dir = /var/www/files/ojs
 
 ; Path to the directory to store public uploaded files
 ; (This directory should be web-accessible and the specified path
 ; should be relative to the base OJS directory)
 ; Windows users should use forward slashes
-public_files_dir = /data/public
+public_files_dir = public
 
 ; Permissions mask for created files and directories
 umask = 0022
@@ -305,12 +305,12 @@ allowed_html = "a[href|target|title],em,strong,cite,code,ul,ol,li[class],dl,dt,d
 ; smtp = On
 
 ; SMTP server settings
-; smtp_server = mail.example.com
-; smtp_port = 25
+smtp_server = mail.dainst.org
+smtp_port = 587
 
 ; Enable SMTP authentication
 ; Supported mechanisms: ssl, tls
-; smtp_auth = ssl
+smtp_auth = tls
 ; smtp_username = username
 ; smtp_password = password
 
