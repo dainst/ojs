@@ -3,9 +3,9 @@
 /**
  * @file plugins/importexport/crossref/CrossrefInfoSender.php
  *
- * Copyright (c) 2013-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2013-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class CrossrefInfoSender
  * @ingroup plugins_importexport_crossref
@@ -58,7 +58,7 @@ class CrossrefInfoSender extends ScheduledTask {
 			$pubIdPlugins = PluginRegistry::loadCategory('pubIds', true, $journal->getId());
 			$doiPubIdPlugin = $pubIdPlugins['doipubidplugin'];
 
-			if ($doiPubIdPlugin->getSetting($journal->getId(), 'enableSubmissionDoi')) {
+			if ($doiPubIdPlugin->getSetting($journal->getId(), 'enablePublicationDoi')) {
 				// Get unregistered articles
 				$unregisteredArticles = $plugin->getUnregisteredArticles($journal);
 				// If there are articles to be deposited

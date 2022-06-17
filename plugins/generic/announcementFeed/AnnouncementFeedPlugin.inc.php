@@ -3,9 +3,9 @@
 /**
  * @file plugins/generic/announcementFeed/AnnouncementFeedPlugin.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class AnnouncementFeedPlugin
  * @ingroup plugins_generic_announcementFeed
@@ -55,11 +55,11 @@ class AnnouncementFeedPlugin extends GenericPlugin {
 	 * @return boolean Hook processing status
 	 */
 	public function callbackAddLinks($hookName, $args) {
-		$request = Application::getRequest();
+		$request = Application::get()->getRequest();
 		if ($this->getEnabled() && is_a($request->getRouter(), 'PKPPageRouter')) {
 			$templateManager = $args[0];
 			$currentJournal = $templateManager->getTemplateVars('currentJournal');
-			$announcementsEnabled = $currentJournal ? $currentJournal->getSetting('enableAnnouncements') : false;
+			$announcementsEnabled = $currentJournal ? $currentJournal->getData('enableAnnouncements') : false;
 
 			if (!$announcementsEnabled) {
 				return false;

@@ -3,9 +3,9 @@
 /**
  * @file classes/payment/ojs/OJSCompletedPaymentDAO.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class OJSCompletedPaymentDAO
  * @ingroup payment
@@ -15,31 +15,28 @@
  *
  */
 
+use Illuminate\Database\Capsule\Manager as Capsule;
+
 import('lib.pkp.classes.payment.CompletedPayment');
+import('classes.payment.ojs.OJSPaymentManager'); // Constants
 
 class OJSCompletedPaymentDAO extends DAO {
 	/**
-	 * Retrieve a ComplatedPayment by its ID.
+	 * Retrieve a CompletedPayment by its ID.
 	 * @param $completedPaymentId int
 	 * @param $contextId int optional
 	 * @return CompletedPayment
 	 */
 	function getById($completedPaymentId, $contextId = null) {
-		$params = array((int) $completedPaymentId);
+		$params = [(int) $completedPaymentId];
 		if ($contextId) $params[] = (int) $contextId;
 
 		$result = $this->retrieve(
 			'SELECT * FROM completed_payments WHERE completed_payment_id = ?' . ($contextId?' AND context_id = ?':''),
 			$params
 		);
-
-		$returner = null;
-		if ($result->RecordCount() != 0) {
-			$returner = $this->_returnPaymentFromRow($result->GetRowAssoc(false));
-		}
-
-		$result->Close();
-		return $returner;
+		$row = $result->current();
+		return $row ? $this->_fromRow((array) $row) : null;
 	}
 
 	/**
@@ -53,7 +50,7 @@ class OJSCompletedPaymentDAO extends DAO {
 				VALUES
 				(%s, ?, ?, ?, ?, ?, ?, ?)',
 				$this->datetimeToDB(Core::getCurrentDate())),
-			array(
+			[
 				(int) $completedPayment->getType(),
 				(int) $completedPayment->getContextId(),
 				(int) $completedPayment->getUserId(),
@@ -61,7 +58,7 @@ class OJSCompletedPaymentDAO extends DAO {
 				$completedPayment->getAmount(),
 				$completedPayment->getCurrencyCode(),
 				$completedPayment->getPayMethodPluginName()
-			)
+			]
 		);
 
 		return $this->getInsertId();
@@ -70,12 +67,9 @@ class OJSCompletedPaymentDAO extends DAO {
 	/**
 	 * Update an existing completed payment.
 	 * @param $completedPayment CompletedPayment
-	 * @return boolean
 	 */
 	function updateObject($completedPayment) {
-		$returner = false;
-		
-		$returner = $this->update(
+		$this->update(
 			sprintf('UPDATE completed_payments
 			SET
 				timestamp = %s,
@@ -88,7 +82,7 @@ class OJSCompletedPaymentDAO extends DAO {
 				payment_method_plugin_name = ? 
 			WHERE completed_payment_id = ?',
 			$this->datetimeToDB($completedPayment->getTimestamp())),
-			array(
+			[
 				(int) $completedPayment->getType(),
 				(int) $completedPayment->getContextId(),
 				(int) $completedPayment->getUserId(),
@@ -97,10 +91,18 @@ class OJSCompletedPaymentDAO extends DAO {
 				$completedPayment->getCurrencyCode(),
 				$completedPayment->getPayMethodPluginName(),
 				(int) $completedPayment->getId()
-			)
+			]
 		);
+	}
 
-		return $returner;
+	/**
+	 * Delete a completed payment.
+	 * @param $completedPaymentId int
+	 */
+	public function deleteById($completedPaymentId) {
+		Capsule::table('completed_payments')
+			->where('completed_payment_id', '=', $completedPaymentId)
+			->delete();
 	}
 
 	/**
@@ -119,7 +121,7 @@ class OJSCompletedPaymentDAO extends DAO {
 	 * @return CompletedPayment|null
 	 */
 	function getByAssoc($userId = null, $paymentType = null, $assocId = null) {
-		$params = array();
+		$params = [];
 		if ($userId) $params[] = (int) $userId;
 		if ($paymentType) $params[] = (int) $paymentType;
 		if ($assocId) $params[] = (int) $assocId;
@@ -130,14 +132,8 @@ class OJSCompletedPaymentDAO extends DAO {
 			($assocId?' AND assoc_id = ?':''),
 			$params
 		);
-
-		$returner = null;
-		if (isset($result->fields[0]) && $result->fields[0] != 0) {
-			$returner = $this->_fromRow($result->fields);
-		}
-
-		$result->Close();
-		return $returner;
+		$row = $result->current();
+		return $row ? $this->_fromRow((array) $row) : null;
 	}
 
 	/**
@@ -175,38 +171,32 @@ class OJSCompletedPaymentDAO extends DAO {
 	function getByContextId($contextId, $rangeInfo = null) {
 		$result = $this->retrieveRange(
 			'SELECT * FROM completed_payments WHERE context_id = ? ORDER BY timestamp DESC',
-			(int) $contextId,
+			[(int) $contextId],
 			$rangeInfo
 		);
 
-		$returner = array();
-		while (!$result->EOF) {
-			$payment = $this->_fromRow($result->fields);
+		$returner = [];
+		foreach ($result as $row) {
+			$payment = $this->_fromRow((array) $row);
 			$returner[$payment->getId()] = $payment;
-			$result->MoveNext();
 		}
 		return $returner;
 	}
 
 	/**
-	 * Retrieve an array of payments for a particular user ID.
-	 * @param $userId int
-	 * @return array Matching payments
+	 * Retrieve CompletedPayments by user ID
+	 * @param $userId int User ID
+	 * @param $rangeInfo DBResultRange Optional
+	 * @return object DAOResultFactory containing matching CompletedPayment objects
 	 */
 	function getByUserId($userId, $rangeInfo = null) {
 		$result = $this->retrieveRange(
 			'SELECT * FROM completed_payments WHERE user_id = ? ORDER BY timestamp DESC',
-			(int) $userId,
+			[(int) $userId],
 			$rangeInfo
 		);
 
-		$returner = array();
-		while (!$result->EOF) {
-			$payment = $this->_fromRow($result->fields);
-			$returner[$payment->getId()] = $payment;
-			$result->MoveNext();
-		}
-		return $returner;
+		return new DAOResultFactory($result, $this, '_fromRow');
 	}
 
 	/**

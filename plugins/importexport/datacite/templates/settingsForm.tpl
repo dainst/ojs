@@ -1,9 +1,9 @@
 {**
  * plugins/importexport/datacite/templates/settingsForm.tpl
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * Datacite plugin settings
  *
@@ -15,7 +15,7 @@
 	{rdelim});
 </script>
 <form class="pkp_form" id="dataciteSettingsForm" method="post" action="{url router=$smarty.const.ROUTE_COMPONENT op="manage" plugin="DataciteExportPlugin" category="importexport" verb="save"}">
-
+	{csrf}
 	{if $doiPluginSettingsLinkAction}
 		{fbvFormArea id="doiPluginSettingsLink"}
 			{fbvFormSection}
@@ -23,13 +23,6 @@
 			{/fbvFormSection}
 		{/fbvFormArea}
 	{/if}
-
-	<div style = "background-color: #ededed; border: 0.1vw solid red; padding: 1vw;">
-		<strong>Hinweis</strong>
-		<p style = "margin:0;">Bitte nehmen Sie keine Änderungen an den Plugin-Settings oder DOI-Einstellungen vor. Wenden Sie sich dafür an ZWD / Redaktion der Zentrale</p>
-		<p style = "margin:0;">Bitte registrieren Sie nicht selbstständig DOIs. Für das DOI-Management ist die ZWD / Redaktion der Zentrale zuständig.</p>
-	</div>
-
 	{fbvFormArea id="dataciteSettingsFormArea"}
 		<p class="pkp_help">{translate key="plugins.importexport.datacite.settings.description"}</p>
 		<p class="pkp_help">{translate key="plugins.importexport.datacite.intro"}</p>
@@ -43,6 +36,10 @@
 		{/fbvFormSection}
 		{fbvFormSection list="true"}
 			{fbvElement type="checkbox" id="testMode" label="plugins.importexport.datacite.settings.form.testMode.description" checked=$testMode|compare:true}
+			{fbvElement type="text" id="testUsername" value=$testUsername label="plugins.importexport.datacite.settings.form.testUsername" maxlength="50" size=$fbvStyles.size.MEDIUM}
+			{fbvElement type="text" password="true" id="testPassword" value=$testPassword label="plugins.importexport.datacite.settings.form.testPassword" maxLength="50" size=$fbvStyles.size.MEDIUM}
+			<span class="instruct">{translate key="plugins.importexport.common.settings.form.password.description"}</span><br/>
+			{fbvElement type="text" id="testDOIPrefix" value=$testDOIPrefix label="plugins.importexport.datacite.settings.form.testDOIPrefix" maxlength="50" size=$fbvStyles.size.MEDIUM}
 		{/fbvFormSection}
 	{/fbvFormArea}
 	{fbvFormButtons submitText="common.save"}

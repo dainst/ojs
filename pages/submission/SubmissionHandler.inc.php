@@ -3,9 +3,9 @@
 /**
  * @file pages/submission/SubmissionHandler.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class SubmissionHandler
  * @ingroup pages_submission
@@ -24,32 +24,7 @@ class SubmissionHandler extends PKPSubmissionHandler {
 	function __construct() {
 		parent::__construct();
 		$this->addRoleAssignment(array(ROLE_ID_AUTHOR, ROLE_ID_SUB_EDITOR, ROLE_ID_MANAGER),
-				array('index', 'wizard', 'step', 'saveStep', 'fetchChoices'));
-	}
-
-
-	//
-	// Public methods
-	//
-	/**
-	 * Retrieves a JSON list of available choices for a tagit metadata input field.
-	 * @param $args array
-	 * @param $request Request
-	 */
-	function fetchChoices($args, $request) {
-		$term = $request->getUserVar('term');
-		switch ($request->getUserVar('list')) {
-			case 'languages':
-				$languageDao = DAORegistry::getDAO('LanguageDAO');
-				$languages = $languageDao->getLanguages(AppLocale::getLocale());
-				$matches = array();
-				foreach ($languages as $language) {
-					if (stristr($language->getName(), $term)) $matches[$language->getCode()] = $language->getName();
-				}
-				header('Content-Type: text/json');
-				echo json_encode($matches);
-		}
-		assert(false);
+				array('index', 'wizard', 'step', 'saveStep'));
 	}
 
 

@@ -10,9 +10,6 @@
 [submodule "plugins/generic/staticPages"]
 	path = plugins/generic/staticPages
 	url = https://github.com/pkp/staticPages.git
-[submodule "plugins/generic/translator"]
-	path = plugins/generic/translator
-	url = https://github.com/pkp/translator.git
 [submodule "plugins/generic/tinymce"]
 	path = plugins/generic/tinymce
 	url = https://github.com/pkp/tinymce.git
@@ -65,3 +62,9 @@
 [submodule "plugins/generic/daiBookViewer"]
 	path = plugins/generic/daiBookViewer
 	url = https://github.com/dainst/dai-book-viewer-ojs-plugin
+[submodule "plugins/blocks/browse"]
+	path = plugins/blocks/browse
+	url = https://github.com/pkp/browse
+[submodule "plugins/generic/googleScholar"]
+	path = plugins/generic/googleScholar
+	url = https://github.com/pkp/googleScholar

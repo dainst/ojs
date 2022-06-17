@@ -3,9 +3,9 @@
 /**
  * @file api/v1/issues/IssueHandler.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class IssueHandler
  * @ingroup api_v1_issues
@@ -15,7 +15,7 @@
  */
 
 import('lib.pkp.classes.handler.APIHandler');
-import('classes.core.ServicesContainer');
+import('classes.core.Services');
 
 class IssueHandler extends APIHandler {
 
@@ -29,17 +29,17 @@ class IssueHandler extends APIHandler {
 			'GET' => array (
 				array(
 					'pattern' => $this->getEndpointPattern(),
-					'handler' => array($this, 'getIssueList'),
+					'handler' => array($this, 'getMany'),
 					'roles' => $roles
 				),
 				array(
 					'pattern' => $this->getEndpointPattern().  '/current',
-					'handler' => array($this, 'getCurrentIssue'),
+					'handler' => array($this, 'getCurrent'),
 					'roles' => $roles
 				),
 				array(
 					'pattern' => $this->getEndpointPattern().  '/{issueId}',
-					'handler' => array($this, 'getIssue'),
+					'handler' => array($this, 'get'),
 					'roles' => $roles
 				),
 			)
@@ -67,7 +67,7 @@ class IssueHandler extends APIHandler {
 		import('classes.security.authorization.OjsJournalMustPublishPolicy');
 		$this->addPolicy(new OjsJournalMustPublishPolicy($request));
 
-		if ($routeName === 'getIssue') {
+		if ($routeName === 'get') {
 			import('classes.security.authorization.OjsIssueRequiredPolicy');
 			$this->addPolicy(new OjsIssueRequiredPolicy($request, $args));
 		}
@@ -85,14 +85,13 @@ class IssueHandler extends APIHandler {
 	 * @param array $args arguments
 	 * @return Response
 	 */
-	public function getIssueList($slimRequest, $response, $args) {
+	public function getMany($slimRequest, $response, $args) {
 		$request = $this->getRequest();
 		$currentUser = $request->getUser();
 		$context = $request->getContext();
-		$issueService = ServicesContainer::instance()->get('issue');
 
 		if (!$context) {
-			return $response->withStatus(404)->withJsonError('api.submissions.404.resourceNotFound');
+			return $response->withStatus(404)->withJsonError('api.404.resourceNotFound');
 		}
 
 		$defaultParams = array(
@@ -141,7 +140,7 @@ class IssueHandler extends APIHandler {
 						$param .= 's';
 					}
 
-					if (is_string($val) && strpos($val, ',') > -1) {
+					if (is_string($val)) {
 						$val = explode(',', $val);
 					} elseif (!is_array($val)) {
 						$val = array($val);
@@ -152,8 +151,14 @@ class IssueHandler extends APIHandler {
 				case 'isPublished':
 					$params[$param] = $val ? true : false;
 					break;
+
+				case 'searchPhrase':
+					$params[$param] = $val;
+					break;
 			}
 		}
+
+		$params['contextId'] = $context->getId();
 
 		\HookRegistry::call('API::issues::params', array(&$params, $slimRequest));
 
@@ -166,19 +171,17 @@ class IssueHandler extends APIHandler {
 		}
 
 		$items = array();
-		$issues = $issueService->getIssues($context->getId(), $params);
-		if (!empty($issues)) {
-			$propertyArgs = array(
-				'request' => $request,
-				'slimRequest' => $slimRequest,
-			);
-			foreach ($issues as $issue) {
-				$items[] = $issueService->getSummaryProperties($issue, $propertyArgs);
-			}
+		$issuesIterator = Services::get('issue')->getMany($params);
+		$propertyArgs = array(
+			'request' => $request,
+			'slimRequest' => $slimRequest,
+		);
+		foreach ($issuesIterator as $issue) {
+			$items[] = Services::get('issue')->getSummaryProperties($issue, $propertyArgs);
 		}
 
 		$data = array(
-			'itemsMax' => $issueService->getIssuesMaxCount($context->getId(), $params),
+			'itemsMax' => Services::get('issue')->getMax($params),
 			'items' => $items,
 		);
 
@@ -194,24 +197,22 @@ class IssueHandler extends APIHandler {
 	 *
 	 * @return Response
 	 */
-	public function getCurrentIssue($slimRequest, $response, $args) {
+	public function getCurrent($slimRequest, $response, $args) {
 
 		$request = $this->getRequest();
 		$context = $request->getContext();
 
-		$issueDao = DAORegistry::getDAO('IssueDAO');
+		$issueDao = DAORegistry::getDAO('IssueDAO'); /* @var $issueDao IssueDAO */
 		$issue = $issueDao->getCurrent($context->getId());
 
 		if (!$issue) {
-			return $response->withStatus(404)->withJsonError('api.submissions.404.resourceNotFound');
+			return $response->withStatus(404)->withJsonError('api.404.resourceNotFound');
 		}
 
-		$data = ServicesContainer::instance()
-			->get('issue')
-			->getFullProperties($issue, array(
-				'request' => $request,
-				'slimRequest' => $slimRequest,
-			));
+		$data = Services::get('issue')->getFullProperties($issue, array(
+			'request' => $request,
+			'slimRequest' => $slimRequest,
+		));
 
 		return $response->withJson($data, 200);
 	}
@@ -225,20 +226,18 @@ class IssueHandler extends APIHandler {
 	 *
 	 * @return Response
 	 */
-	public function getIssue($slimRequest, $response, $args) {
+	public function get($slimRequest, $response, $args) {
 		$request = $this->getRequest();
 		$issue = $this->getAuthorizedContextObject(ASSOC_TYPE_ISSUE);
 
 		if (!$issue) {
-			return $response->withStatus(404)->withJsonError('api.submissions.404.resourceNotFound');
+			return $response->withStatus(404)->withJsonError('api.404.resourceNotFound');
 		}
 
-		$data = ServicesContainer::instance()
-				->get('issue')
-				->getFullProperties($issue, array(
-					'request' => $request,
-					'slimRequest' => $slimRequest,
-				));
+		$data = Services::get('issue')->getFullProperties($issue, array(
+			'request' => $request,
+			'slimRequest' => $slimRequest,
+		));
 
 		return $response->withJson($data, 200);
 	}

@@ -3,9 +3,9 @@
 /**
  * @file plugins/importexport/native/NativeImportExportPlugin.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class NativeImportExportPlugin
  * @ingroup plugins_importexport_native
@@ -67,18 +67,32 @@ class NativeImportExportPlugin extends ImportExportPlugin {
 	function display($args, $request) {
 		parent::display($args, $request);
 		$templateMgr = TemplateManager::getManager($request);
-		$journal = $request->getJournal();
+		$context = $request->getContext();
 		switch (array_shift($args)) {
 			case 'index':
 			case '':
-				import('lib.pkp.controllers.list.submissions.SelectSubmissionsListHandler');
-				$exportSubmissionsListHandler = new SelectSubmissionsListHandler(array(
-					'title' => 'plugins.importexport.native.exportSubmissionsSelect',
-					'count' => 100,
-					'inputName' => 'selectedSubmissions[]',
-					'lazyLoad' => true,
-				));
-				$templateMgr->assign('exportSubmissionsListData', json_encode($exportSubmissionsListHandler->getConfig()));
+				$apiUrl = $request->getDispatcher()->url($request, ROUTE_API, $context->getPath(), 'submissions');
+				$submissionsListPanel = new \APP\components\listPanels\SubmissionsListPanel(
+					'submissions',
+					__('common.publications'),
+					[
+						'apiUrl' => $apiUrl,
+						'count' => 100,
+						'getParams' => new stdClass(),
+						'lazyLoad' => true,
+					]
+				);
+				$submissionsConfig = $submissionsListPanel->getConfig();
+				$submissionsConfig['addUrl'] = '';
+				$submissionsConfig['filters'] = array_slice($submissionsConfig['filters'], 1);
+				$templateMgr->setState([
+					'components' => [
+						'submissions' => $submissionsConfig,
+					],
+				]);
+				$templateMgr->assign([
+					'pageComponent' => 'ImportExportPage',
+				]);
 				$templateMgr->display($this->getTemplateResource('index.tpl'));
 				break;
 			case 'uploadImportXML':
@@ -97,17 +111,19 @@ class NativeImportExportPlugin extends ImportExportPlugin {
 				header('Content-Type: application/json');
 				return $json->getString();
 			case 'importBounce':
+				if (!$request->checkCSRF()) throw new Exception('CSRF mismatch!');
 				$json = new JSONMessage(true);
 				$json->setEvent('addTab', array(
 					'title' => __('plugins.importexport.native.results'),
-					'url' => $request->url(null, null, null, array('plugin', $this->getName(), 'import'), array('temporaryFileId' => $request->getUserVar('temporaryFileId'))),
+					'url' => $request->url(null, null, null, array('plugin', $this->getName(), 'import'), array('temporaryFileId' => $request->getUserVar('temporaryFileId'), 'csrfToken' => $request->getSession()->getCSRFToken())),
 				));
 				header('Content-Type: application/json');
 				return $json->getString();
 			case 'import':
+				if (!$request->checkCSRF()) throw new Exception('CSRF mismatch!');
 				AppLocale::requireComponents(LOCALE_COMPONENT_PKP_SUBMISSION);
 				$temporaryFileId = $request->getUserVar('temporaryFileId');
-				$temporaryFileDao = DAORegistry::getDAO('TemporaryFileDAO');
+				$temporaryFileDao = DAORegistry::getDAO('TemporaryFileDAO'); /* @var $temporaryFileDao TemporaryFileDAO */
 				$user = $request->getUser();
 				$temporaryFile = $temporaryFileDao->getTemporaryFile($temporaryFileId, $user->getId());
 				if (!$temporaryFile) {
@@ -126,7 +142,7 @@ class NativeImportExportPlugin extends ImportExportPlugin {
 					$filter = 'native-xml=>article';
 				}
 
-				$deployment = new NativeImportExportDeployment($journal, $user);
+				$deployment = new NativeImportExportDeployment($context, $user);
 
 				libxml_use_internal_errors(true);
 				$content = $this->importSubmissions(file_get_contents($temporaryFilePath), $filter, $deployment);
@@ -184,7 +200,7 @@ class NativeImportExportPlugin extends ImportExportPlugin {
 				);
 				import('lib.pkp.classes.file.FileManager');
 				$fileManager = new FileManager();
-				$exportFileName = $this->getExportFileName($this->getExportPath(), 'articles', $journal, '.xml');
+				$exportFileName = $this->getExportFileName($this->getExportPath(), 'articles', $context, '.xml');
 				$fileManager->writeFile($exportFileName, $exportXml);
 				$fileManager->downloadByPath($exportFileName);
 				$fileManager->deleteByPath($exportFileName);
@@ -197,7 +213,7 @@ class NativeImportExportPlugin extends ImportExportPlugin {
 				);
 				import('lib.pkp.classes.file.FileManager');
 				$fileManager = new FileManager();
-				$exportFileName = $this->getExportFileName($this->getExportPath(), 'issues', $journal, '.xml');
+				$exportFileName = $this->getExportFileName($this->getExportPath(), 'issues', $context, '.xml');
 				$fileManager->writeFile($exportFileName, $exportXml);
 				$fileManager->downloadByPath($exportFileName);
 				$fileManager->deleteByPath($exportFileName);
@@ -213,31 +229,39 @@ class NativeImportExportPlugin extends ImportExportPlugin {
 	 * @param $submissionIds array Array of submission IDs
 	 * @param $context Context
 	 * @param $user User|null
+	 * @param $opts array
 	 * @return string XML contents representing the supplied submission IDs.
 	 */
-	function exportSubmissions($submissionIds, $context, $user, $opt = array()) {
-		$submissionDao = Application::getSubmissionDAO();
-		$xml = '';
-		$filterDao = DAORegistry::getDAO('FilterDAO');
+	function exportSubmissions($submissionIds, $context, $user, $opts = array()) {
+		$submissionDao = DAORegistry::getDAO('SubmissionDAO'); /* @var $submissionDao SubmissionDAO */
+		$filterDao = DAORegistry::getDAO('FilterDAO'); /* @var $filterDao FilterDAO */
 		$nativeExportFilters = $filterDao->getObjectsByGroup('article=>native-xml');
 		assert(count($nativeExportFilters) == 1); // Assert only a single serialization filter
 		$exportFilter = array_shift($nativeExportFilters);
 		$exportFilter->setDeployment(new NativeImportExportDeployment($context, $user));
+
 		$submissions = array();
 		foreach ($submissionIds as $submissionId) {
-			$submission = $submissionDao->getById($submissionId, $context->getId());
+			/** @var $submissionService APP\Services\SubmissionService */
+			$submissionService = Services::get('submission');
+			$submission = $submissionService->get($submissionId);
+
 			if ($submission) $submissions[] = $submission;
 		}
+
 		libxml_use_internal_errors(true);
 		$exportFilter->setOpts($opts);
 		$submissionXml = $exportFilter->execute($submissions, true);
 		$xml = $submissionXml->saveXml();
+
 		$errors = array_filter(libxml_get_errors(), function($a) {
 			return $a->level == LIBXML_ERR_ERROR || $a->level == LIBXML_ERR_FATAL;
 		});
+
 		if (!empty($errors)) {
 			$this->displayXMLValidationErrors($errors, $xml);
 		}
+
 		return $xml;
 	}
 
@@ -249,9 +273,8 @@ class NativeImportExportPlugin extends ImportExportPlugin {
 	 * @return string XML contents representing the supplied issue IDs.
 	 */
 	function exportIssues($issueIds, $context, $user, $opts = array()) {
-		$issueDao = DAORegistry::getDAO('IssueDAO');
-		$xml = '';
-		$filterDao = DAORegistry::getDAO('FilterDAO');
+		$issueDao = DAORegistry::getDAO('IssueDAO'); /* @var $issueDao IssueDAO */
+		$filterDao = DAORegistry::getDAO('FilterDAO'); /* @var $filterDao FilterDAO */
 		$nativeExportFilters = $filterDao->getObjectsByGroup('issue=>native-xml');
 		assert(count($nativeExportFilters) == 1); // Assert only a single serialization filter
 		$exportFilter = array_shift($nativeExportFilters);
@@ -282,7 +305,7 @@ class NativeImportExportPlugin extends ImportExportPlugin {
 	 * @return array Set of imported submissions
 	 */
 	function importSubmissions($importXml, $filter, $deployment) {
-		$filterDao = DAORegistry::getDAO('FilterDAO');
+		$filterDao = DAORegistry::getDAO('FilterDAO'); /* @var $filterDao FilterDAO */
 		$nativeImportFilters = $filterDao->getObjectsByGroup($filter);
 		assert(count($nativeImportFilters) == 1); // Assert only a single unserialization filter
 		$importFilter = array_shift($nativeImportFilters);
@@ -311,11 +334,8 @@ class NativeImportExportPlugin extends ImportExportPlugin {
 
 		AppLocale::requireComponents(LOCALE_COMPONENT_APP_MANAGER, LOCALE_COMPONENT_PKP_MANAGER, LOCALE_COMPONENT_PKP_SUBMISSION);
 
-		$journalDao = DAORegistry::getDAO('JournalDAO');
-		$issueDao = DAORegistry::getDAO('IssueDAO');
-		$sectionDao = DAORegistry::getDAO('SectionDAO');
-		$userDao = DAORegistry::getDAO('UserDAO');
-		$publishedArticleDao = DAORegistry::getDAO('PublishedArticleDAO');
+		$journalDao = DAORegistry::getDAO('JournalDAO'); /* @var $journalDao JournalDAO */
+		$userDao = DAORegistry::getDAO('UserDAO'); /* @var $userDao UserDAO */
 
 		$journal = $journalDao->getByPath($journalPath);
 
@@ -327,6 +347,8 @@ class NativeImportExportPlugin extends ImportExportPlugin {
 			$this->usage($scriptName);
 			return;
 		}
+
+		PluginRegistry::loadCategory('pubIds', true, $journal->getId());
 
 		if ($xmlFile && $this->isRelativePath($xmlFile)) {
 			$xmlFile = PWD . '/' . $xmlFile;
@@ -452,6 +474,8 @@ class NativeImportExportPlugin extends ImportExportPlugin {
 
 	/**
 	 * Pull out getopt style long options.
+	 * WARNING: This method is checked for by name in DepositPackage in the PLN plugin
+	 * to determine if options are supported!
 	 * @param &$args array
 	 * #param $optCodes array
 	 */
@@ -465,7 +489,7 @@ class NativeImportExportPlugin extends ImportExportPlugin {
 				$sticky = null;
 				continue;
 			}
-			if (!starts_with($arg, '--')) {
+			if (substr($arg, 0, 2) != '--') {
 				$newArgs[] = $arg;
 				continue;
 			}

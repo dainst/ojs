@@ -1,10 +1,10 @@
-	====================================
+	===================================
 	=== Open Journal Systems
 	=== The Public Knowledge Project
-	=== Version: 3.1.2
-	=== GIT tag: 3_1_2-4
-	=== Release date:  December 6, 2019
-	====================================
+	=== Version: 3.3.0
+	=== GIT tag: 3_3_0-11
+	=== Release date: June 7, 2022
+	===================================
 
 
 ## About
@@ -16,7 +16,7 @@ PKP web site at <http://pkp.sfu.ca/>.
 
 ## License
 
-OJS is licensed under the GNU General Public License v2. See the file
+OJS is licensed under the GNU General Public License v3. See the file
 [docs/COPYING](COPYING) for the complete terms of this license.
 
 Third parties are welcome to modify and redistribute OJS in entirety or parts
@@ -28,8 +28,8 @@ improvements or bug fixes to the software.
 
 Recommended server requirements:
 
-* PHP >= 7.1
-* MySQL >= 4.1 or PostgreSQL >= 9.1.5
+* PHP 7.3.x, 7.4.x, or 8.0.x
+* MySQL >= 4.1 or PostgreSQL >= 9.5
 * Apache >= 1.3.2x or >= 2.0.4x or Microsoft IIS 6
 * Operating system: Any OS that supports the above software, including
 	Linux, BSD, Solaris, Mac OS X, Windows
@@ -51,7 +51,7 @@ A secure deployment can be best achieved by using the following policies:
 
 * Configure OJS (`config.inc.php`) to use SHA1 hashing rather than MD5.
 
-* Configure OJS (`config.inc.php`) to use force_ssl_login so that
+* Configure OJS (`config.inc.php`) to use force_login_ssl so that
 	authenticated users communicate with the server via HTTPS.
 
 * Install OJS so that the files directory is NOT a subdirectory of
@@ -60,6 +60,9 @@ A secure deployment can be best achieved by using the following policies:
 	backups of this directory should be roughly synchronized with
 	database backups.
 
+* Configure an "allowed_hosts" setting in config.inc.php in order to prevent
+	HOST header injection attacks. This setting should contain a JSON-
+	formatted list of all hostnames that the server should consider valid.
 
 ## Installation
 
@@ -79,10 +82,7 @@ To install OJS:
 		 to manually overwrite this file during installation)
 	 * `public`
 	 * `cache`
-	 * `cache/t_cache`
-	 * `cache/t_config`
-	 * `cache/t_compile`
-	 * `cache/_db`
+	 * `plugins` (for plugin installation via the web interface)
 
 3. Create a directory to store uploaded files (submission files, etc.)
 	 and make this directory writeable. It is recommended that this
@@ -176,14 +176,14 @@ interpreter installed on your server.
 * See [lib/pkp/lib/libraries.txt](../lib/pkp/lib/libraries.txt) for a list of third-party libraries
 	used by OJS.
 
-* OJS supports the legacy GeoLiteCite database to approximate geolocation
+* OJS supports the legacy GeoLite City database to approximate geolocation
 	information for usage statistics. If you would like to use this optional
-	functionality, you can download the database from MaxMind at:
-	http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz
+	functionality, you can download the database from here:
+	https://download.cnet.com/MaxMind-GeoLite-City-Database/3000-10254_4-10506960.html
 	You will need to decompress the file and place "GeoLiteCity.dat" into
 	the `plugins/generic/usageStats` directory. A separate license agreement
 	is required for this use of this database. For details, see:
-	https://dev.maxmind.com/geoip/legacy/geolite/
+	https://support.maxmind.com/geolite-legacy-discontinuation-notice/
 
 ## Contact/Support
 

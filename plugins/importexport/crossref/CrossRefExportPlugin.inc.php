@@ -3,9 +3,9 @@
 /**
  * @file plugins/importexport/crossref/CrossRefExportPlugin.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class CrossRefExportPlugin
  * @ingroup plugins_importexport_crossref
@@ -20,14 +20,15 @@ import('classes.plugins.DOIPubIdExportPlugin');
 define('CROSSREF_STATUS_FAILED', 'failed');
 
 define('CROSSREF_API_DEPOSIT_OK', 200);
+define('CROSSREF_API_DEPOSIT_ERROR_FROM_CROSSREF', 403);
 
 define('CROSSREF_API_URL', 'https://api.crossref.org/v2/deposits');
 //TESTING
 define('CROSSREF_API_URL_DEV', 'https://test.crossref.org/v2/deposits');
 
-define('CROSSREF_API_STAUTS_URL', 'https://api.crossref.org/servlet/submissionDownload');
+define('CROSSREF_API_STATUS_URL', 'https://doi.crossref.org/servlet/submissionDownload');
 //TESTING
-define('CROSSREF_API_STAUTS_URL_DEV', 'https://test.crossref.org/servlet/submissionDownload');
+define('CROSSREF_API_STATUS_URL_DEV', 'https://test.crossref.org/servlet/submissionDownload');
 
 // The name of the setting used to save the registered DOI and the URL with the deposit status.
 define('CROSSREF_DEPOSIT_STATUS', 'depositStatus');
@@ -78,7 +79,7 @@ class CrossRefExportPlugin extends DOIPubIdExportPlugin {
 	 * @copydoc PubObjectsExportPlugin::getStatusActions()
 	 */
 	function getStatusActions($pubObject) {
-		$request = Application::getRequest();
+		$request = Application::get()->getRequest();
 		$dispatcher = $request->getDispatcher();
 		return array(
 			CROSSREF_STATUS_FAILED =>
@@ -106,44 +107,38 @@ class CrossRefExportPlugin extends DOIPubIdExportPlugin {
 		// if the failure occured on request and the message was saved
 		// return that message
 		$articleId = $request->getUserVar('articleId');
-		$articleDao = DAORegistry::getDAO('ArticleDAO');
-		$article = $articleDao->getByid($articleId);
+		$submissionDao = DAORegistry::getDAO('SubmissionDAO'); /* @var $submissionDao SubmissionDAO */
+		$article = $submissionDao->getByid($articleId);
 		$failedMsg = $article->getData($this->getFailedMsgSettingName());
 		if (!empty($failedMsg)) {
 			return $failedMsg;
 		}
-		// else check the failure message with Crossref, using the API
+
 		$context = $request->getContext();
-		$curlCh = curl_init();
-		if ($httpProxyHost = Config::getVar('proxy', 'http_host')) {
-			curl_setopt($curlCh, CURLOPT_PROXY, $httpProxyHost);
-			curl_setopt($curlCh, CURLOPT_PROXYPORT, Config::getVar('proxy', 'http_port', '80'));
-			if ($username = Config::getVar('proxy', 'username')) {
-				curl_setopt($curlCh, CURLOPT_PROXYUSERPWD, $username . ':' . Config::getVar('proxy', 'password'));
+
+		$httpClient = Application::get()->getHttpClient();
+		try {
+			$response = $httpClient->request(
+				'POST',
+				$this->isTestMode($context) ? CROSSREF_API_STATUS_URL_DEV : CROSSREF_API_STATUS_URL,
+				[
+					'form_params' => [
+						'doi_batch_id' => $request->getUserVar('batchId'),
+						'type' => 'result',
+						'usr' => $this->getSetting($context->getId(), 'username'),
+						'pwd' => $this->getSetting($context->getId(), 'password'),
+					]
+				]
+			);
+		} catch (GuzzleHttp\Exception\RequestException $e) {
+			$returnMessage = $e->getMessage();
+			if ($e->hasResponse()) {
+				$returnMessage = $e->getResponse()->getBody(true) . ' (' .$e->getResponse()->getStatusCode() . ' ' . $e->getResponse()->getReasonPhrase() . ')';
 			}
+			return __('plugins.importexport.common.register.error.mdsError', array('param' => $returnMessage));
 		}
-		curl_setopt($curlCh, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($curlCh, CURLOPT_POST, true);
-		curl_setopt($curlCh, CURLOPT_HEADER, 0);
 
-		// Use a different endpoint for testing and production.
-		$endpoint = ($this->isTestMode($context) ? CROSSREF_API_STAUTS_URL_DEV : CROSSREF_API_STAUTS_URL);
-		curl_setopt($curlCh, CURLOPT_URL, $endpoint);
-		// Set the form post fields
-		$username = $this->getSetting($context->getId(), 'username');
-		$password = $this->getSetting($context->getId(), 'password');
-		$batchId = $request->getUserVar('batchId');
-		$data = array('doi_batch_id' => $batchId, 'type' => 'result', 'usr' => $username, 'pwd' => $password);
-		curl_setopt($curlCh, CURLOPT_POSTFIELDS, $data);
-		curl_setopt($curlCh, CURLOPT_SSL_VERIFYPEER, false);
-		$response = curl_exec($curlCh);
-
-		if ($response === false) {
-			$result = __('plugins.importexport.common.register.error.mdsError', array('param' => 'No response from server.'));
-		} else {
-			$result = $response;
-		}
-		return $result;
+		return (string) $response->getBody();
 	}
 
 
@@ -159,17 +154,14 @@ class CrossRefExportPlugin extends DOIPubIdExportPlugin {
 	}
 
 	/**
-	 * Hook callback that returns the deposit setting's names,
-	 * to consider them by article or issue update.
-	 *
-	 * @copydoc PubObjectsExportPlugin::getAdditionalFieldNames()
+	 * Get a list of additional setting names that should be stored with the objects.
+	 * @return array
 	 */
-	function getAdditionalFieldNames($hookName, $args) {
-		parent::getAdditionalFieldNames($hookName, $args);
-		$additionalFields =& $args[1];
-		assert(is_array($additionalFields));
-		$additionalFields[] = $this->getDepositBatchIdSettingName();
-		$additionalFields[] = $this->getFailedMsgSettingName();
+	protected function _getObjectAdditionalSettings() {
+		return array_merge(parent::_getObjectAdditionalSettings(), array(
+			$this->getDepositBatchIdSettingName(),
+			$this->getFailedMsgSettingName(),
+		));
 	}
 
 	/**
@@ -274,92 +266,96 @@ class CrossRefExportPlugin extends DOIPubIdExportPlugin {
 	/**
 	 * @see PubObjectsExportPlugin::depositXML()
 	 *
-	 * @param $objects PublishedArticle
+	 * @param $objects Submission
 	 * @param $context Context
-	 * @param $filename Export XML filename
+	 * @param $filename string Export XML filename
 	 */
 	function depositXML($objects, $context, $filename) {
 		$status = null;
+		$msgSave = null;
 
-		$curlCh = curl_init();
-		if ($httpProxyHost = Config::getVar('proxy', 'http_host')) {
-			curl_setopt($curlCh, CURLOPT_PROXY, $httpProxyHost);
-			curl_setopt($curlCh, CURLOPT_PROXYPORT, Config::getVar('proxy', 'http_port', '80'));
-			if ($username = Config::getVar('proxy', 'username')) {
-				curl_setopt($curlCh, CURLOPT_PROXYUSERPWD, $username . ':' . Config::getVar('proxy', 'password'));
-			}
-		}
-		curl_setopt($curlCh, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($curlCh, CURLOPT_POST, true);
-		curl_setopt($curlCh, CURLOPT_HEADER, 0);
-
-		// Use a different endpoint for testing and production.
-		$endpoint = ($this->isTestMode($context) ? CROSSREF_API_URL_DEV : CROSSREF_API_URL);
-		curl_setopt($curlCh, CURLOPT_URL, $endpoint);
-		// Set the form post fields
-		$username = $this->getSetting($context->getId(), 'username');
-		$password = $this->getSetting($context->getId(), 'password');
+		$httpClient = Application::get()->getHttpClient();
 		assert(is_readable($filename));
-		if (function_exists('curl_file_create')) {
-			curl_setopt($curlCh, CURLOPT_SAFE_UPLOAD, true);
-			$cfile = new CURLFile($filename);
-		} else {
-			$cfile = "@$filename";
-		}
-		$data = array('operation' => 'doMDUpload', 'usr' => $username, 'pwd' => $password, 'mdFile' => $cfile);
-		curl_setopt($curlCh, CURLOPT_POSTFIELDS, $data);
-		curl_setopt($curlCh, CURLOPT_SSL_VERIFYPEER, false);
-		$response = curl_exec($curlCh);
 
-		$msg = null;
-		if ($response === false) {
-			$result = array(array('plugins.importexport.common.register.error.mdsError', 'No response from server.'));
-		} elseif (curl_getinfo($curlCh, CURLINFO_HTTP_CODE) != CROSSREF_API_DEPOSIT_OK) {
-			// These are the failures that occur immediatelly on request
-			// and can not be accessed later, so we save the falure message in the DB
-			$xmlDoc = new DOMDocument();
-			$xmlDoc->loadXML($response);
-			// Get batch ID
-			$batchIdNode = $xmlDoc->getElementsByTagName('batch_id')->item(0);
-			// Get re message
-			$msg = $response;
+		try {
+			$response = $httpClient->request('POST',
+				$this->isTestMode($context) ? CROSSREF_API_URL_DEV : CROSSREF_API_URL,
+				[
+					'multipart' => [
+						[
+							'name'     => 'usr',
+							'contents' => $this->getSetting($context->getId(), 'username'),
+						],
+						[
+							'name'     => 'pwd',
+							'contents' => $this->getSetting($context->getId(), 'password'),
+						],
+						[
+							'name'     => 'operation',
+							'contents' => 'doMDUpload',
+						],
+						[
+							'name'     => 'mdFile',
+							'contents' => fopen($filename, 'r'),
+						],
+					]
+				]
+			);
+		 } catch (GuzzleHttp\Exception\RequestException $e) {
+			$returnMessage = $e->getMessage();
+			if ($e->hasResponse()) {
+				$eResponseBody = $e->getResponse()->getBody(true);
+				$eStatusCode = $e->getResponse()->getStatusCode();
+				if ($eStatusCode == CROSSREF_API_DEPOSIT_ERROR_FROM_CROSSREF) {
+					$xmlDoc = new DOMDocument();
+					$xmlDoc->loadXML($eResponseBody);
+					$batchIdNode = $xmlDoc->getElementsByTagName('batch_id')->item(0);
+					$msg = $xmlDoc->getElementsByTagName('msg')->item(0)->nodeValue;
+					$msgSave = $msg . PHP_EOL . $eResponseBody;
+					$status = CROSSREF_STATUS_FAILED;
+					$this->updateDepositStatus($context, $objects, $status, $batchIdNode->nodeValue, $msgSave);
+					$this->updateObject($objects);
+					$returnMessage = $msg . ' (' .$eStatusCode . ' ' . $e->getResponse()->getReasonPhrase() . ')';
+				} else {
+					$returnMessage = $eResponseBody . ' (' .$eStatusCode . ' ' . $e->getResponse()->getReasonPhrase() . ')';
+				}
+			}
+			return [['plugins.importexport.common.register.error.mdsError', $returnMessage]];
+		}
+
+		// Get DOMDocument from the response XML string
+		$xmlDoc = new DOMDocument();
+		$xmlDoc->loadXML($response->getBody());
+		$batchIdNode = $xmlDoc->getElementsByTagName('batch_id')->item(0);
+
+		// Get the DOI deposit status
+		// If the deposit failed
+		$failureCountNode = $xmlDoc->getElementsByTagName('failure_count')->item(0);
+		$failureCount = (int) $failureCountNode->nodeValue;
+		if ($failureCount > 0) {
 			$status = CROSSREF_STATUS_FAILED;
 			$result = false;
 		} else {
-			// Get DOMDocument from the response XML string
-			$xmlDoc = new DOMDocument();
-			$xmlDoc->loadXML($response);
-			$batchIdNode = $xmlDoc->getElementsByTagName('batch_id')->item(0);
+			// Deposit was received
+			$status = EXPORT_STATUS_REGISTERED;
+			$result = true;
 
-			// Get the DOI deposit status
-			// If the deposit failed
-			$failureCountNode = $xmlDoc->getElementsByTagName('failure_count')->item(0);
-			$failureCount = (int) $failureCountNode->nodeValue;
-			if ($failureCount > 0) {
-				$status = CROSSREF_STATUS_FAILED;
-				$result = false;
-			} else {
-				// Deposit was received
-				$status = EXPORT_STATUS_REGISTERED;
-				$result = true;
-
-				// If there were some warnings, display them
-				$warningCountNode = $xmlDoc->getElementsByTagName('warning_count')->item(0);
-				$warningCount = (int) $warningCountNode->nodeValue;
-				if ($warningCount > 0) {
-					$result = array(array('plugins.importexport.crossref.register.success.warning', htmlspecialchars($response)));
-				}
-				// A possibility for other plugins (e.g. reference linking) to work with the response
-				HookRegistry::call('crossrefexportplugin::deposited', array($this, $response, $objects));
+			// If there were some warnings, display them
+			$warningCountNode = $xmlDoc->getElementsByTagName('warning_count')->item(0);
+			$warningCount = (int) $warningCountNode->nodeValue;
+			if ($warningCount > 0) {
+				$result = array(array('plugins.importexport.crossref.register.success.warning', htmlspecialchars($response->getBody())));
 			}
+			// A possibility for other plugins (e.g. reference linking) to work with the response
+			HookRegistry::call('crossrefexportplugin::deposited', array($this, $response->getBody(), $objects));
 		}
+
 		// Update the status
 		if ($status) {
-			$this->updateDepositStatus($context, $objects, $status, $batchIdNode->nodeValue, $msg);
+			$this->updateDepositStatus($context, $objects, $status, $batchIdNode->nodeValue, $msgSave);
 			$this->updateObject($objects);
 		}
 
-		curl_close($curlCh);
 		return $result;
 	}
 
@@ -372,7 +368,7 @@ class CrossRefExportPlugin extends DOIPubIdExportPlugin {
 	 * @param $failedMsg string (opitonal)
 	 */
 	function updateDepositStatus($context, $object, $status, $batchId, $failedMsg = null) {
-		assert(is_a($object, 'PublishedArticle') or is_a($object, 'Issue'));
+		assert(is_a($object, 'Submission') or is_a($object, 'Issue'));
 		// remove the old failure message, if exists
 		$object->setData($this->getFailedMsgSettingName(), null);
 		$object->setData($this->getDepositStatusSettingName(), $status);

@@ -135,7 +135,7 @@ class CounterReport {
 	 * @return array()
 	 */
 	protected function filterForContext($filters) {
-		$request = Application::getRequest();
+		$request = Application::get()->getRequest();
 		$journal = $request->getContext();
 		$journalId = $journal ? $journal->getId() : '';
 		// If the request context is at the journal level, the dimension context id must be that same journal id
@@ -263,17 +263,18 @@ class CounterReport {
 	 * @return mixed
 	 */
 	function _getVendorComponent($key) {
-		$request = Application::getRequest();
+		$request = Application::get()->getRequest();
 		$site = $request->getSite();
 		$context = $request->getContext();
 		$contextDao = Application::getContextDAO();
 		$availableContexts = $contextDao->getAvailable();
+		list($firstContext, $secondContext) = [$availableContexts->next(), $availableContexts->next()];
 		switch ($key) {
 			case 'name':
-				if ($availableContexts->getCount() > 1) {
+				if ($secondContext) { // Multiple contexts
 					$name = $site->getLocalizedTitle();
 				} else {
-					$name =  $context->getSetting('publisherInstitution');
+					$name =  $context->getData('publisherInstitution');
 					if (empty($name)) {
 						$name = $context->getLocalizedName();
 					}
@@ -283,7 +284,7 @@ class CounterReport {
 				return $request->getBaseUrl();
 			case 'contacts':
 				try {
-					if ($availableContexts->getCount() > 1) {
+					if ($secondContext) { // Multiple contexts
 						$contactName = $site->getLocalizedContactName();
 						$contactEmail =  $site->getLocalizedContactEmail();
 					} else {

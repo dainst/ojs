@@ -3,9 +3,9 @@
 /**
  * @file plugins/importexport/native/filter/ArticleNativeXmlFilter.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class ArticleNativeXmlFilter
  * @ingroup plugins_importexport_native
@@ -35,18 +35,6 @@ class ArticleNativeXmlFilter extends SubmissionNativeXmlFilter {
 		return 'plugins.importexport.native.filter.ArticleNativeXmlFilter';
 	}
 
-
-	//
-	// Implement abstract methods from SubmissionNativeXmlFilter
-	//
-	/**
-	 * Get the representation export filter group name
-	 * @return string
-	 */
-	function getRepresentationExportFilterGroupName() {
-		return 'article-galley=>native-xml';
-	}
-
 	//
 	// Submission conversion functions
 	//
@@ -60,61 +48,7 @@ class ArticleNativeXmlFilter extends SubmissionNativeXmlFilter {
 		$deployment = $this->getDeployment();
 		$submissionNode = parent::createSubmissionNode($doc, $submission);
 
-		// Add the series, if one is designated.
-		if ($sectionId = $submission->getSectionId()) {
-			$sectionDao = DAORegistry::getDAO('SectionDAO');
-			$section = $sectionDao->getById($sectionId, $submission->getContextId());
-			assert(isset($section));
-			$submissionNode->setAttribute('section_ref', $section->getLocalizedAbbrev());
-		}
-
-		$publishedArticleDao = DAORegistry::getDAO('PublishedArticleDAO');
-		$publishedArticle = $publishedArticleDao->getByArticleId($submission->getId());
-		$publishedArticle ? $submissionNode->setAttribute('seq', (int) $publishedArticle->getSequence()) : $submissionNode->setAttribute('seq', '0');
-		$publishedArticle ? $submissionNode->setAttribute('access_status', $publishedArticle->getAccessStatus()) : $submissionNode->setAttribute('access_status', '0');
-		// if this is a published article and not part/subelement of an issue element
-		// add issue identification element
-		if ($publishedArticle && !$deployment->getIssue()) {
-			$issueDao = DAORegistry::getDAO('IssueDAO');
-			$issue = $issueDao->getById($publishedArticle->getIssueId());
-			import('plugins.importexport.native.filter.NativeFilterHelper');
-			$nativeFilterHelper = new NativeFilterHelper();
-			$submissionNode->appendChild($nativeFilterHelper->createIssueIdentificationNode($this, $doc, $issue));
-		}
-		$pages = $submission->getPages();
-		if (!empty($pages)) $submissionNode->appendChild($node = $doc->createElementNS($deployment->getNamespace(), 'pages', htmlspecialchars($pages, ENT_COMPAT, 'UTF-8')));
-		// cover images
-		import('plugins.importexport.native.filter.NativeFilterHelper');
-		$nativeFilterHelper = new NativeFilterHelper();
-		$coversNode = $nativeFilterHelper->createCoversNode($this, $doc, $submission);
-		if ($coversNode) $submissionNode->appendChild($coversNode);
-
-		$citationsListNode = $this->createCitationsNode($doc, $deployment, $submission);
-		if ($citationsListNode !== false) {
-			$submissionNode->appendChild($citationsListNode);
-		}
 		return $submissionNode;
 	}
 
-	/**
-	 * Create and return a Citations node.
-	 * @param $doc DOMDocument
-	 * @param $deployment
-	 * @param $submission Submission
-	 * @return DOMElement
-	 */
-	private function createCitationsNode($doc, $deployment, $submission) {
-		$citationDao = DAORegistry::getDAO('CitationDAO');
-
-		$nodeCitations = $doc->createElementNS($deployment->getNamespace(), 'citations');
-		$submissionCitations = $citationDao->getBySubmissionId($submission->_data['id']);
-		if ($submissionCitations->getCount() != 0) {
-			while ($elementCitation = $submissionCitations->next()) {
-				$rawCitation = $elementCitation->getRawCitation();
-				$nodeCitations->appendChild($node = $doc->createElementNS($deployment->getNamespace(), 'citation', htmlspecialchars($rawCitation, ENT_COMPAT, 'UTF-8')));
-			}
-			return $nodeCitations;
-		}
-		return false;
-	}
 }

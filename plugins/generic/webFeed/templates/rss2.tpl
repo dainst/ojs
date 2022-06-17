@@ -1,9 +1,9 @@
 {**
  * plugins/generic/webFeed/templates/rss2.tpl
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * RSS 2 feed template
  *
@@ -17,8 +17,8 @@
 
 		{if $journal->getLocalizedDescription()}
 			{assign var="description" value=$journal->getLocalizedDescription()}
-		{elseif $journal->getLocalizedSetting('searchDescription')}
-			{assign var="description" value=$journal->getLocalizedSetting('searchDescription')}
+		{elseif $journal->getLocalizedData('searchDescription')}
+			{assign var="description" value=$journal->getLocalizedData('searchDescription')}
 		{/if}
 
 		<description>{$description|strip|escape:"html"}</description>
@@ -28,20 +28,21 @@
 			<language>{$journal->getPrimaryLocale()|replace:'_':'-'|strip|escape:"html"}</language>
 		{/if}
 
-		{if $journal->getLocalizedSetting('copyrightNotice')}
-			<copyright>{$journal->getLocalizedSetting('copyrightNotice')|strip|escape:"html"}</copyright>
+		{if $journal->getLocalizedData('licenseTerms')}
+			<copyright>{$journal->getLocalizedData('licenseTerms')|strip|escape:"html"}</copyright>
 		{/if}
 
-		{if $journal->getSetting('contactEmail')}
-			<managingEditor>{$journal->getSetting('contactEmail')|strip|escape:"html"}{if $journal->getSetting('contactName')} ({$journal->getSetting('contactName')|strip|escape:"html"}){/if}</managingEditor>
+		{if $journal->getData('contactEmail')}
+			<managingEditor>{$journal->getData('contactEmail')|strip|escape:"html"}{if $journal->getData('contactName')} ({$journal->getData('contactName')|strip|escape:"html"}){/if}</managingEditor>
 		{/if}
 
-		{if $journal->getSetting('supportEmail')}
-			<webMaster>{$journal->getSetting('supportEmail')|strip|escape:"html"}{if $journal->getSetting('contactName')} ({$journal->getSetting('supportName')|strip|escape:"html"}){/if}</webMaster>
+		{if $journal->getData('supportEmail')}
+			<webMaster>{$journal->getData('supportEmail')|strip|escape:"html"}{if $journal->getData('contactName')} ({$journal->getData('supportName')|strip|escape:"html"}){/if}</webMaster>
 		{/if}
 
 		{if $issue->getDatePublished()}
-			<pubDate>{$issue->getDatePublished()|date_format:"%a, %d %b %Y %T %z"}</pubDate>
+			{capture assign="datePublished"}{$issue->getDatePublished()|strtotime}{/capture}
+			<pubDate>{$smarty.const.DATE_RSS|date:$datePublished}</pubDate>
 		{/if}
 
 		{* <lastBuildDate/> *}
@@ -52,12 +53,13 @@
 		<docs>http://blogs.law.harvard.edu/tech/rss</docs>
 		<ttl>60</ttl>
 
-		{foreach name=sections from=$publishedArticles item=section key=sectionId}
+		{foreach name=sections from=$publishedSubmissions item=section key=sectionId}
 			{foreach from=$section.articles item=article}
+				{assign var=publication value=$article->getCurrentPublication()}
 				<item>
 					{* required elements *}
 					<title>{$article->getLocalizedTitle()|strip|escape:"html"}</title>
-					<link>{url page="article" op="view" path=$article->getBestArticleId()}</link>
+					<link>{url page="article" op="view" path=$article->getBestId()}</link>
 					<description>{$article->getLocalizedAbstract()|strip|escape:"html"}</description>
 
 					{* optional elements *}
@@ -71,15 +73,16 @@
 						{translate|escape key="submission.copyrightStatement" copyrightYear=$article->getCopyrightYear() copyrightHolder=$article->getLocalizedCopyrightHolder()}
 						{$article->getLicenseURL()|escape}
 					</dc:rights>
-					{if ($article->getAccessStatus() == $smarty.const.ARTICLE_ACCESS_OPEN || ($article->getAccessStatus() == $smarty.const.ARTICLE_ACCESS_ISSUE_DEFAULT && $issue->getAccessStatus() == $smarty.const.ISSUE_ACCESS_OPEN)) && $article->isCCLicense()}
+					{if ($publication->getData('accessStatus') == $smarty.const.ARTICLE_ACCESS_OPEN || ($publication->getData('accessStatus') == $smarty.const.ARTICLE_ACCESS_ISSUE_DEFAULT && $issue->getAccessStatus() == $smarty.const.ISSUE_ACCESS_OPEN)) && $article->isCCLicense()}
 						<cc:license rdf:resource="{$article->getLicenseURL()|escape}" />
 					{else}
 						<cc:license></cc:license>
 					{/if}
 
-					<guid isPermaLink="true">{url page="article" op="view" path=$article->getBestArticleId()}</guid>
+					<guid isPermaLink="true">{url page="article" op="view" path=$article->getBestId()}</guid>
 					{if $article->getDatePublished()}
-						<pubDate>{$article->getDatePublished()|date_format:"%a, %d %b %Y %T %z"}</pubDate>
+						{capture assign="datePublished"}{$article->getDatePublished()|strtotime}{/capture}
+						<pubDate>{$smarty.const.DATE_RSS|date:$datePublished}</pubDate>
 					{/if}
 				</item>
 			{/foreach}{* articles *}

@@ -1,9 +1,9 @@
 {**
  * templates/payments/subscriptionPolicyForm.tpl
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * Setup subscription policies.
  *
@@ -21,8 +21,8 @@
 	{fbvFormSection label="manager.subscriptionPolicies.subscriptionContact"}
 		<p>{translate key="manager.subscriptionPolicies.subscriptionContactDescription"}</p>
 		{fbvElement type="text" label="user.name" required=true id="subscriptionName" value=$subscriptionName maxlength="60" inline=true size=$fbvStyles.size.MEDIUM}
-		{fbvElement type="text" label="user.email" id="subscriptionEmail" value=$subscriptionEmail size=$fbvStyles.size.MEDIUM required=true}
-		{fbvElement type="text" label="user.phone" name="subscriptionPhone" id="subscriptionPhone" value=$subscriptionPhone maxlength="24" size=$fbvStyles.size.SMALL}
+		{fbvElement type="email" label="user.email" id="subscriptionEmail" value=$subscriptionEmail size=$fbvStyles.size.MEDIUM required=true}
+		{fbvElement type="tel" label="user.phone" name="subscriptionPhone" id="subscriptionPhone" value=$subscriptionPhone maxlength="24" size=$fbvStyles.size.SMALL}
 		{fbvElement type="textarea" id="subscriptionMailingAddress" value=$subscriptionMailingAddress height=$fbvStyles.height.SHORT required=true label="common.mailingAddress"}
 	{/fbvFormSection}
 
@@ -66,19 +66,8 @@
 			<span>{translate key="manager.subscriptionPolicies.onlinePaymentDisabled"}<span>
 		{/if}
 	{/fbvFormSection}
-
 	{fbvFormSection label="manager.subscriptionPolicies.openAccessOptions" list=true}
-		<p>{translate key="manager.subscriptionPolicies.openAccessOptionsDescription"}</p>
-
-		{fbvElement type="select" id="delayedOpenAccessDuration" name="delayedOpenAccessDuration" selected=$delayedOpenAccessDuration from=$validDuration label="manager.subscriptionPolicies.delayedOpenAccessDescription" size=$fbvStyles.size.MEDIUM translate=false}
 		{fbvElement type="checkbox" id="enableOpenAccessNotification" name="enableOpenAccessNotification" value=1 checked=$enableOpenAccessNotification label="manager.subscriptionPolicies.openAccessNotificationDescription" disabled=$scheduledTasksEnabled|compare:0}
-
-		<p>{translate key="manager.subscriptionPolicies.delayedOpenAccessPolicyDescription"}</p>
-		{fbvElement type="textarea" id="delayedOpenAccessPolicy" value=$delayedOpenAccessPolicy rich=true label="about.delayedOpenAccess" multilingual=true}
-
-		<p>{translate key="manager.subscriptionPolicies.authorSelfArchiveDescription"}</p>
-		{fbvElement type="checkbox" id="enableAuthorSelfArchive" name="enableAuthorSelfArchive" value=1 checked=$enableAuthorSelfArchive label="manager.subscriptionPolicies.authorSelfArchive" disabled=$scheduledTasksEnabled|compare:0}
-		{fbvElement type="textarea" id="authorSelfArchivePolicy" value=$authorSelfArchivePolicy rich=true multilingual=true}
 	{/fbvFormSection}
 
 	{fbvFormButtons hideCancel=true submitText="common.save"}

@@ -9,7 +9,7 @@ This Version is based on ojs 3.1.2.4 (stable) and includes the following Plugins
 
 > Open Journal Systems (OJS) has been developed by the Public Knowledge Project. For general information about OJS and other open research systems, visit the [PKP web site][pkp].
 
-[![Build Status](https://travis-ci.org/pkp/ojs.svg?branch=master)](https://travis-ci.org/pkp/ojs)
+[![Build Status](https://travis-ci.org/pkp/ojs.svg?branch=stable-3_3_0)](https://travis-ci.org/pkp/ojs)
 
 ### Updates
 1. Update submodule in its own repository, e.g. dainst/ojs3_theme, commit and push your changes.
@@ -33,9 +33,9 @@ Checkout submodules and copy default configuration :
 
 Install or update dependencies via Composer (https://getcomposer.org/):
 
-    composer --working-dir=lib/pkp update
-    composer --working-dir=plugins/paymethod/paypal update
-    composer --working-dir=plugins/generic/citationStyleLanguage update
+    composer --working-dir=lib/pkp install
+    composer --working-dir=plugins/paymethod/paypal install
+    composer --working-dir=plugins/generic/citationStyleLanguage install
 
 Install or update dependencies via [NPM](https://www.npmjs.com/):
 
@@ -47,7 +47,7 @@ If your PHP version supports built-in development server :
 
     php -S localhost:8000
 
-See [Wiki][wiki-dev] for more complete development guide.
+See the [Documentation Hub][doc-hub] for a more complete development guide.
 
 ## Running Tests
 
@@ -75,8 +75,8 @@ Third parties are welcome to modify and redistribute OJS in entirety or parts
 according to the terms of this license. PKP also welcomes patches for
 improvements or bug fixes to the software.
 
-[pkp]: http://pkp.sfu.ca/
+[pkp]: https://pkp.sfu.ca/
 [readme]: docs/README.md
-[wiki-dev]: http://pkp.sfu.ca/wiki/index.php/HOW-TO_check_out_PKP_applications_from_git
-[php-unit]: http://phpunit.de/
+[doc-hub]: https://docs.pkp.sfu.ca/
+[php-unit]: https://phpunit.de/
 [gpl-licence]: docs/COPYING
