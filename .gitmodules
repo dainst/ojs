@@ -68,3 +68,6 @@
 [submodule "plugins/generic/googleScholar"]
 	path = plugins/generic/googleScholar
 	url = https://github.com/pkp/googleScholar
+[submodule "plugins/importexport/dnb"]
+	path = plugins/importexport/dnb
+	url = https://github.com/ojsde/dnb.git
