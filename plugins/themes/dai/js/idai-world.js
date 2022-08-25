@@ -21,6 +21,14 @@ function loadHTML() {
 			idaiWorldNavDropdown.style.left = 0;
 			idaiWorldNavDropdown.style.position = 'absolute';
 
+			const idaipublicationsLogo = document.createElement('img');
+			idaipublicationsLogo.style.height = '25px';
+			idaipublicationsLogo.style.position = 'absolute';
+			idaipublicationsLogo.style.left = '75px';
+			idaipublicationsLogo.src =
+				relativePath + '/plugins/themes/dai/images/iDAI.publications_schatten.png';
+			idaiWorldNavDropdown.appendChild(idaipublicationsLogo);
+
 			const griffinImage = document.createElement('img');
 			griffinImage.style.height = '25px';
 			griffinImage.src =
