@@ -47,16 +47,13 @@ function loadDropdown() {
 			idaiWorldNavDropdown.appendChild(idaipublicationsLogo);
 
 			const griffinImage = document.createElement('img');
-			griffinImage.style.height = '25px';
+			griffinImage.id = 'header-dai-griffon';
 			griffinImage.src =
 				relativePath + '/plugins/themes/dai/images/logo_griffin.png';
 
-			const griffinIco = document.createElement('li');
-			griffinIco.style.float = 'right';
-			griffinIco.style.marginTop = '2px';
-			griffinIco.appendChild(griffinImage);
-
-			navigationUserElement.appendChild(griffinIco);
+			navigationUserElement.appendChild(
+				document.createElement('li').appendChild(griffinImage)
+			);
 			navigationUserElement.appendChild(idaiWorldNavDropdown);
 
 			document.getElementById('idai-world-logo').src =

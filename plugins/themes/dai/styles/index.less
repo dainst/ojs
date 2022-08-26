@@ -8,3 +8,18 @@
 
 // Prevent caret icon from being added to dropdown <a> element by bootstrap4 css
 #idai-world-dropdown:after { content: none }
+
+#header-dai-griffon {
+	height: 25px;
+
+	@media (min-width: @screen-desktop) {
+		position: absolute;
+		bottom: 0px;
+	}
+
+	@media not (min-width: @screen-desktop) {
+		position: absolute;
+		right: 0px;
+		top: 3px;
+	}
+};
