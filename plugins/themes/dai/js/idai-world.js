@@ -1,16 +1,33 @@
-const ojsPattern = /http.*(\/journals).*/;
-const ompPattern = /http.*(\/books).*/;
+const ojsPattern = /http.*(\/journals)(.*)/;
+const ompPattern = /http.*(\/books)(.*)/;
 
 var relativePath = '';
 var match = window.location.href.match(ojsPattern);
 
+const ojsPathsWithGradientHeader = ['', '/'];
+
 if (match !== null && match.length > 1) relativePath = match[1];
 else {
 	match = window.location.href.match(ompPattern);
-	if (match !== null && match.length > 1) match[1];
+	if (match !== null && match.length > 1) relativePath = match[1];
 }
 
-function loadHTML() {
+const omp = relativePath === '/books';
+
+function attachHeaderClass() {
+	if (
+		omp ||
+		(match !== null &&
+			match.length === 3 &&
+			ojsPathsWithGradientHeader.includes(match[2]))
+	) {
+		document
+			.getElementById('headerNavigationContainer')
+			.classList.add('idai-world-header');
+	}
+}
+
+function loadDropdown() {
 	fetch(relativePath + '/plugins/themes/dai/js/idai-world.html')
 		.then(response => response.text())
 		.then(text => {
@@ -47,4 +64,5 @@ function loadHTML() {
 		});
 }
 
-loadHTML();
+attachHeaderClass();
+loadDropdown();
