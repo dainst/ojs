@@ -71,3 +71,6 @@
 [submodule "plugins/importexport/dnb"]
 	path = plugins/importexport/dnb
 	url = https://github.com/ojsde/dnb.git
+[submodule "plugins/themes/publications-theme"]
+	path = plugins/themes/publications-theme
+	url = https://github.com/dainst/publications-theme.git
