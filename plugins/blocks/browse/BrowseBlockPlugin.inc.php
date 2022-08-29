@@ -3,13 +3,11 @@
 /**
  * @file plugins/blocks/browse/BrowseBlockPlugin.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file LICENSE.
  *
  * @class BrowseBlockPlugin
- * @ingroup plugins_blocks_browse
- *
  * @brief Class for browse block plugin
  */
 
@@ -41,7 +39,7 @@ class BrowseBlockPlugin extends BlockPlugin {
 		if (!$context) {
 			return '';
 		}
-		$categoryDao = DAORegistry::getDAO('CategoryDAO');
+		$categoryDao = DAORegistry::getDAO('CategoryDAO'); /* @var $categoryDao CategoryDAO */
 		$router = $request->getRouter();
 
 		$requestedCategoryPath = null;
@@ -49,7 +47,7 @@ class BrowseBlockPlugin extends BlockPlugin {
 		if ($router->getRequestedPage($request) . '/' . $router->getRequestedOp($request) == 'catalog/category') $requestedCategoryPath = reset($args);
 		$templateMgr->assign(array(
 			'browseBlockSelectedCategory' => $requestedCategoryPath,
-			'browseCategoryFactory' => $categoryDao->getByContextId($context->getId()),
+			'browseCategories' => $categoryDao->getByContextId($context->getId())->toArray(),
 		));
 		return parent::getContents($templateMgr);
 	}

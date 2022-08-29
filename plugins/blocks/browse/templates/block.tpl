@@ -1,9 +1,9 @@
 {**
- * plugins/blocks/browse/block.tpl
+ * templates/block.tpl
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file LICENSE.
  *
  * @brief Common site sidebar menu for browsing the catalog.
  *
@@ -12,26 +12,25 @@
  *  browseable categories.
  * @uses $browseSeriesFactory object Series factory providing access to
  *  browseable series.
- *
  *}
 <div class="pkp_block block_browse">
-	<span class="title">
+	<h2 class="title">
 		{translate key="plugins.block.browse"}
-	</span>
+	</h2>
 
 	<nav class="content" role="navigation" aria-label="{translate|escape key="plugins.block.browse"}">
 		<ul>
-			{if $browseCategoryFactory && $browseCategoryFactory->getCount()}
+			{if $browseCategories}
 				<li class="has_submenu">
 					{translate key="plugins.block.browse.category"}
 					<ul>
-						{iterate from=browseCategoryFactory item=browseCategory}
+						{foreach from=$browseCategories item=browseCategory}
 							<li class="category_{$browseCategory->getId()}{if $browseCategory->getParentId()} is_sub{/if}{if $browseBlockSelectedCategory == $browseCategory->getPath()} current{/if}">
 								<a href="{url router=$smarty.const.ROUTE_PAGE page="catalog" op="category" path=$browseCategory->getPath()|escape}">
 									{$browseCategory->getLocalizedTitle()|escape}
 								</a>
 							</li>
-						{/iterate}
+						{/foreach}
 					</ul>
 				</li>
 			{/if}
