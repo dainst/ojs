@@ -13,14 +13,7 @@
  * @brief CustomHeader plugin class
  */
 
-use PKP\plugins\GenericPlugin;
-use PKP\config\Config;
-use PKP\plugins\HookRegistry;
-use PKP\linkAction\request\AjaxModal;
-use PKP\core\JSONMessage;
-use APP\i18n\AppLocale;
-use APP\template\TemplateManager;
-use APP\core\Application;
+import('lib.pkp.classes.plugins.GenericPlugin');
 
 class CustomHeaderPlugin extends GenericPlugin {
 	/** @var bool Whether or not the header has been injected */
@@ -62,6 +55,7 @@ class CustomHeaderPlugin extends GenericPlugin {
 	 */
 	function getActions($request, $verb) {
 		$router = $request->getRouter();
+		import('lib.pkp.classes.linkAction.request.AjaxModal');
 		return array_merge(
 			$this->getEnabled()?array(
 				new LinkAction(
