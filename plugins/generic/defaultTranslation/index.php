@@ -3,9 +3,9 @@
 /**
  * @file index.php
  *
- * Copyright (c) 2013-2022 Simon Fraser University
- * Copyright (c) 2003-2022 John Willinsky
- * Distributed under the GNU GPL v3. For full terms see the file LICENSE.
+ * Copyright (c) 2013-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
+ * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @package plugins.generic.defaultTranslation
  *
@@ -13,6 +13,5 @@
  *
  */
 
-use APP\plugins\generic\defaultTranslation\DefaultTranslationPlugin;
-
+require_once('DefaultTranslationPlugin.inc.php');
 return new DefaultTranslationPlugin();
