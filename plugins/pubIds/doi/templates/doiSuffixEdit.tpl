@@ -11,6 +11,7 @@
 {assign var=pubObjectType value=$pubIdPlugin->getPubObjectType($pubObject)}
 {assign var=enableObjectDoi value=$pubIdPlugin->getSetting($currentContext->getId(), "enable`$pubObjectType`Doi")}
 {if $enableObjectDoi}
+	<p></p>
 	{assign var=storedPubId value=$pubObject->getStoredPubId($pubIdPlugin->getPubIdType())}
 	{fbvFormArea id="pubIdDOIFormArea" class="border" title="plugins.pubIds.doi.editor.doi"}
 		{assign var=formArea value=true}
@@ -39,7 +40,7 @@
 				{/fbvFormSection}
 			{/if}
 		{else} {* pub id preview *}
-			<p>{$pubIdPlugin->getPubId($pubObject)|escape}</p>
+			<p>10.34780/####-####</p>
 			{if $canBeAssigned}
 				<p class="pkp_help">{translate key="plugins.pubIds.doi.editor.canBeAssigned"}</p>
 				{assign var=templatePath value=$pubIdPlugin->getTemplateResource('doiAssignCheckBox.tpl')}
