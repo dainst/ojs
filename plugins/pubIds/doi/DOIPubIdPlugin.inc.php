@@ -479,6 +479,7 @@ class DOIPubIdPlugin extends PubIdPlugin {
 				'label' => __('metadata.property.displayName.doi'),
 				'description' => __('plugins.pubIds.doi.editor.preview.publication', ['prefix' => $prefix]),
 				'value' => $Doi,
+				'assignIdLabel' => __('plugins.pubIds.doi.editor.doi.assignDoi'),
 			]));
 		}
 		// Add a text field to enter the DOI if no pattern exists
