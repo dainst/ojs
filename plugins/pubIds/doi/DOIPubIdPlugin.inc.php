@@ -458,14 +458,31 @@ class DOIPubIdPlugin extends PubIdPlugin {
 
 		$suffixType = $this->getSetting($form->submissionContext->getId(), 'doiSuffix');
 		$pattern = '';
-		if ($suffixType === 'default') {
+
+		if ($suffixType === "randomId") {
+			// create random suffix;
+			$uniqueId = uniqid(); // 13 chars
+			$randomLetter = substr(str_shuffle("abcdefghijklmnopqrstuvwxyz"), 0, 7); // 7 chars
+			$part1 = substr(str_shuffle($randomLetter . $uniqueId), 0, -16); // => 5 chars
+			$part2 = substr(str_shuffle($randomLetter . $uniqueId), 0, -16); // => 5 chars
+			$DoiSuffix = $part1."-".$part2;
+			$Doi = $prefix . "/" . $DoiSuffix;
+		}
+		elseif ($suffixType === 'default') {
 			$pattern = '%j.v%vi%i.%a';
 		} elseif ($suffixType === 'pattern') {
 			$pattern = $this->getSetting($form->submissionContext->getId(), 'doiPublicationSuffixPattern');
 		}
 
+		if($suffixType === "randomId") {
+			$form->addField(new \PKP\components\forms\FieldText('pub-id::doi', [
+				'label' => __('metadata.property.displayName.doi'),
+				'description' => __('plugins.pubIds.doi.editor.preview.publication', ['prefix' => $prefix]),
+				'value' => $Doi,
+			]));
+		}
 		// Add a text field to enter the DOI if no pattern exists
-		if (!$pattern) {
+		elseif (!$pattern) {
 			$form->addField(new \PKP\components\forms\FieldText('pub-id::doi', [
 				'label' => __('metadata.property.displayName.doi'),
 				'description' => __('plugins.pubIds.doi.editor.doi.description', ['prefix' => $prefix]),
