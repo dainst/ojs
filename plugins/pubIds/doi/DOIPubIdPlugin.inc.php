@@ -226,7 +226,7 @@ class DOIPubIdPlugin extends PubIdPlugin {
 	/**
 	 * @copydoc PubIdPlugin::getPubId()
 	 */
-	function getPubId($pubObject) {
+	function constructRandomDOI($pubObject) {
 
 		// Get the pub id type
 		$pubIdType = $this->getPubIdType();
@@ -455,7 +455,6 @@ class DOIPubIdPlugin extends PubIdPlugin {
 		};
 
 		$prefix = $this->getSetting($form->submissionContext->getId(), 'doiPrefix');
-
 		$suffixType = $this->getSetting($form->submissionContext->getId(), 'doiSuffix');
 
 		if ($suffixType === 'customId') {
@@ -468,7 +467,19 @@ class DOIPubIdPlugin extends PubIdPlugin {
 		}
 		else {
 			// create random DOI-Suffix
+			$uniqueId = uniqid(); // 13 chars
+			$randomLetter = substr(str_shuffle("abcdefghijklmnopqrstuvwxyz"), 0, 7); // 7 chars
+			$part1 = substr(str_shuffle($randomLetter . $uniqueId), 0, -16); // => 5 chars
+			$part2 = substr(str_shuffle($randomLetter . $uniqueId), 0, -16); // => 5 chars
+			$pubIdSuffix = $part1."-".$part2;
+			$doi = $prefix . "/" . $pubIdSuffix . " TEST";
 
+			// set random DOI in PublicationsFormField (must be saved by user)
+			$form->addField(new \PKP\components\forms\FieldText('pub-id::doi', [
+				'label' => __('metadata.property.displayName.doi'),
+				'description' => __('plugins.pubIds.doi.editor.doi.description', ['prefix' => $prefix]),
+				'value' => $doi,
+			]));
 		};
 
 	}
