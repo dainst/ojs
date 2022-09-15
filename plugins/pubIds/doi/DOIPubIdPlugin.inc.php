@@ -481,6 +481,8 @@ class DOIPubIdPlugin extends PubIdPlugin {
 			print_r($submission);
 			print_r($doi);
 
+			print_r($form->publication);
+
 			// set random DOI in PublicationsFormField (must be saved by user)
 			$form->addField(new \PKP\components\forms\FieldText('pub-id::doi', [
 				'label' => __('metadata.property.displayName.doi'),
