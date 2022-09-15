@@ -472,13 +472,17 @@ class DOIPubIdPlugin extends PubIdPlugin {
 			$part1 = substr(str_shuffle($randomLetter . $uniqueId), 0, -16); // => 5 chars
 			$part2 = substr(str_shuffle($randomLetter . $uniqueId), 0, -16); // => 5 chars
 			$pubIdSuffix = $part1."-".$part2;
-			$doi = $prefix . "/" . $pubIdSuffix . " TEST";
+			$doi = $prefix . "/" . $pubIdSuffix;
+
+			// save random DOI as pub-id:doi
+			$submission = Services::get('submission')->get($form->publication->getData('submissionId'));
+			$submission->setStoredPubId('pub-id::doi', $doi);
 
 			// set random DOI in PublicationsFormField (must be saved by user)
 			$form->addField(new \PKP\components\forms\FieldText('pub-id::doi', [
 				'label' => __('metadata.property.displayName.doi'),
 				'description' => __('plugins.pubIds.doi.manager.settings.doiSuffixRandomIdentifier', ['prefix' => $prefix]),
-				'value' => "Test",
+				'value' => $form->publication->getData('pub-id::doi'),
 			]));
 		};
 
