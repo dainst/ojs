@@ -478,13 +478,13 @@ class DOIPubIdPlugin extends PubIdPlugin {
 			$submission = Services::get('submission')->get($form->publication->getData('submissionId'));
 			$submission->setStoredPubId('pub-id::doi', $doi);
 
-			print_r($submission);
+			// print_r($submission);
 
 			// set random DOI in PublicationsFormField (must be saved by user)
 			$form->addField(new \PKP\components\forms\FieldText('pub-id::doi', [
 				'label' => __('metadata.property.displayName.doi'),
-				'description' => __('plugins.pubIds.doi.manager.settings.doiSuffixRandomIdentifier', ['prefix' => $prefix]),
-				'value' => $form->publication->setData('pub-id::doi', $doi),
+				'description' => __('plugins.pubIds.doi.manager.settings.doiSuffixRandomIdentifier'),
+				'value' => $doi,
 			]));
 		};
 
