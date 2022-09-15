@@ -484,7 +484,8 @@ class DOIPubIdPlugin extends PubIdPlugin {
 			$form->addField(new \PKP\components\forms\FieldText('pub-id::doi', [
 				'label' => __('metadata.property.displayName.doi'),
 				'description' => __('plugins.pubIds.doi.manager.settings.doiSuffixRandomIdentifier'),
-				'value' => $doi,
+				'Vorschlag' => $doi,
+				'value' => $form->publication->getData('pub-id::doi'),
 			]));
 		};
 
