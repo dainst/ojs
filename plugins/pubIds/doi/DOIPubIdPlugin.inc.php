@@ -480,7 +480,9 @@ class DOIPubIdPlugin extends PubIdPlugin {
 			// $publication->setStoredPubId('pub-id::doi', $doi);
 
 			print_r($submission);
+			print_r("---------------------------");
 			print_r($publication);
+			print_r("---------------------------");
 			print_r($form);
 
 			// set random DOI in PublicationsFormField (must be saved by user)
