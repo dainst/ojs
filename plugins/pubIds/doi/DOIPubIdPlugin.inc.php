@@ -477,7 +477,7 @@ class DOIPubIdPlugin extends PubIdPlugin {
 			// set random DOI in PublicationsFormField (must be saved by user)
 			$form->addField(new \PKP\components\forms\FieldText('pub-id::doi', [
 				'label' => __('metadata.property.displayName.doi'),
-				'description' => __('plugins.pubIds.doi.editor.doi.description', ['prefix' => $prefix]),
+				'description' => __('plugins.pubIds.doi.manager.settings.doiSuffixRandomIdentifier', ['prefix' => $prefix]),
 				'value' => $doi,
 			]));
 		};
