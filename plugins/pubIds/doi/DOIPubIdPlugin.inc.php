@@ -448,80 +448,29 @@ class DOIPubIdPlugin extends PubIdPlugin {
 
 		if ($form->id !== 'publicationIdentifiers') {
 			return;
-		}
+		};
 
 		if (!$this->getSetting($form->submissionContext->getId(), 'enablePublicationDoi')) {
 			return;
-		}
+		};
 
 		$prefix = $this->getSetting($form->submissionContext->getId(), 'doiPrefix');
 
 		$suffixType = $this->getSetting($form->submissionContext->getId(), 'doiSuffix');
-		$pattern = '';
 
-		if ($suffixType === "randomId") {
-			// create random suffix;
-			$uniqueId = uniqid(); // 13 chars
-			$randomLetter = substr(str_shuffle("abcdefghijklmnopqrstuvwxyz"), 0, 7); // 7 chars
-			$part1 = substr(str_shuffle($randomLetter . $uniqueId), 0, -16); // => 5 chars
-			$part2 = substr(str_shuffle($randomLetter . $uniqueId), 0, -16); // => 5 chars
-			$DoiSuffix = $part1."-".$part2;
-			$Doi = $prefix . "/" . $DoiSuffix;
-		}
-		elseif ($suffixType === 'default') {
-			$pattern = '%j.v%vi%i.%a';
-		} elseif ($suffixType === 'pattern') {
-			$pattern = $this->getSetting($form->submissionContext->getId(), 'doiPublicationSuffixPattern');
-		}
-
-		if($suffixType === "randomId") {
-			$form->addField(new \PKP\components\forms\FieldText('pub-id::doi', [
-				'label' => __('metadata.property.displayName.doi'),
-				'description' => __('plugins.pubIds.doi.editor.preview.publication', ['prefix' => $prefix]),
-				'value' => $Doi,
-				'assignIdLabel' => __('plugins.pubIds.doi.editor.doi.assignDoi'),
-			]));
-		}
-		// Add a text field to enter the DOI if no pattern exists
-		elseif (!$pattern) {
+		if ($suffixType === 'customId') {
+			// Add a text field to enter a custom DOI:
 			$form->addField(new \PKP\components\forms\FieldText('pub-id::doi', [
 				'label' => __('metadata.property.displayName.doi'),
 				'description' => __('plugins.pubIds.doi.editor.doi.description', ['prefix' => $prefix]),
 				'value' => $form->publication->getData('pub-id::doi'),
 			]));
-		} else {
-			$fieldData = [
-				'label' => __('metadata.property.displayName.doi'),
-				'value' => $form->publication->getData('pub-id::doi'),
-				'prefix' => $prefix,
-				'pattern' => $pattern,
-				'contextInitials' => PKPString::regexp_replace('/[^A-Za-z0-9]/', '', PKPString::strtolower($form->submissionContext->getData('acronym', $form->submissionContext->getData('primaryLocale')))) ?? '',
-				'separator' => '/',
-				'submissionId' => $form->publication->getData('submissionId'),
-				'assignIdLabel' => __('plugins.pubIds.doi.editor.doi.assignDoi'),
-				'clearIdLabel' => __('plugins.pubIds.doi.editor.clearObjectsDoi'),
-			];
-			if ($form->publication->getData('pub-id::publisher-id')) {
-				$fieldData['publisherId'] = $form->publication->getData('pub-id::publisher-id');
-			}
-			if ($form->publication->getData('pages')) {
-				$fieldData['pages'] = $form->publication->getData('pages');
-			}
-			if ($form->publication->getData('issueId')) {
-				$issue = Services::get('issue')->get($form->publication->getData('issueId'));
-				if ($issue) {
-					$fieldData['issueNumber'] = $issue->getNumber() ?? '';
-					$fieldData['issueVolume'] = $issue->getVolume() ?? '';
-					$fieldData['year'] = $issue->getYear() ?? '';
-				}
-			}
-			if ($suffixType === 'default') {
-				$fieldData['missingPartsLabel'] = __('plugins.pubIds.doi.editor.missingIssue');
-			} else  {
-				$fieldData['missingPartsLabel'] = __('plugins.pubIds.doi.editor.missingParts');
-			}
-			$form->addField(new \PKP\components\forms\FieldPubId('pub-id::doi', $fieldData));
 		}
+		else {
+			// create random DOI-Suffix
+
+		};
+
 	}
 
 	/**
