@@ -476,8 +476,8 @@ class DOIPubIdPlugin extends PubIdPlugin {
 
 			// save random DOI as pub-id:doi of publication:
 			$submission = Services::get('submission')->get($form->publication->getData('submissionId'));
-			$publication = Services::get('publication')->get($submission->getData('publicationId'));
-			$publication->setStoredPubId('pub-id::doi', $doi);
+			$publication = $submission->getData('publications');
+			// $publication->setStoredPubId('pub-id::doi', $doi);
 
 			print_r($submission);
 			print_r($publication);
