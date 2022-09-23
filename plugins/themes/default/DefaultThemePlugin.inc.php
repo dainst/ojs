@@ -128,6 +128,9 @@ class DefaultThemePlugin extends ThemePlugin {
 		} elseif ($this->getOption('typography') == 'lora_openSans') {
 			$this->addStyle('font', 'styles/fonts/lora_openSans.less');
 			$additionalLessVariables[] = '@font: "Open Sans", sans-serif;@font-heading: Lora, serif;';
+
+		// dai-specific: add Cargan font combinded with OpenSans
+
 		} elseif ($this->getOption('typography') == 'cargan_openSans') {
 			$this->addStyle('font', 'styles/fonts/cargan_openSans.less');
 			$additionalLessVariables[] = '@font: "Open Sans", sans-serif;@font-heading: Cargan, serif;';
