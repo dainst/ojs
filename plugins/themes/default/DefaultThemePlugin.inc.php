@@ -67,10 +67,6 @@ class DefaultThemePlugin extends ThemePlugin {
 					'value' => 'lora_openSans',
 					'label' => __('plugins.themes.default.option.typography.lora_openSans'),
 				],
-				[
-					'value' => 'cargan_openSans',
-					'label' => __('plugins.themes.default.option.typography.cargan_openSans'),
-				],
 			],
 			'default' => 'notoSans',
 		]);
@@ -128,12 +124,6 @@ class DefaultThemePlugin extends ThemePlugin {
 		} elseif ($this->getOption('typography') == 'lora_openSans') {
 			$this->addStyle('font', 'styles/fonts/lora_openSans.less');
 			$additionalLessVariables[] = '@font: "Open Sans", sans-serif;@font-heading: Lora, serif;';
-
-		// dai-specific: add Cargan font combinded with OpenSans
-
-		} elseif ($this->getOption('typography') == 'cargan_openSans') {
-			$this->addStyle('font', 'styles/fonts/cargan_openSans.less');
-			$additionalLessVariables[] = '@font: "Open Sans", sans-serif;@font-heading: Cargan, serif;';
 		} else {
 			$this->addStyle('font', 'styles/fonts/notoSans.less');
 		}
