@@ -29,7 +29,7 @@
 installed = Off
 
 ; The canonical URL to the OJS installation (excluding the trailing slash)
-base_url = "http://pkp.sfu.ca/ojs"
+base_url = base_url
 
 ; Session cookie name
 session_cookie_name = OJSSID
@@ -132,7 +132,7 @@ sitewide_privacy_statement = Off
 [database]
 
 driver = mysqli
-host = localhost
+host = publications_db
 username = ojs
 password = ojs
 name = ojs
