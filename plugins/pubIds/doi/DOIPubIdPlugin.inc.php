@@ -464,38 +464,6 @@ class DOIPubIdPlugin extends PubIdPlugin {
 				'description' => __('plugins.pubIds.doi.editor.doi.description', ['prefix' => $prefix]),
 				'value' => $form->publication->getData('pub-id::doi'),
 			]));
-		} else {
-			$fieldData = [
-				'label' => __('metadata.property.displayName.doi'),
-				'value' => $form->publication->getData('pub-id::doi'),
-				'prefix' => $prefix,
-				'pattern' => $pattern,
-				'contextInitials' => PKPString::regexp_replace('/[^-._;()\/A-Za-z0-9]/', '', PKPString::strtolower($form->submissionContext->getData('acronym', $form->submissionContext->getData('primaryLocale')))) ?? '',
-				'separator' => '/',
-				'submissionId' => $form->publication->getData('submissionId'),
-				'assignIdLabel' => __('plugins.pubIds.doi.editor.doi.assignDoi'),
-				'clearIdLabel' => __('plugins.pubIds.doi.editor.clearObjectsDoi'),
-			];
-			if ($form->publication->getData('pub-id::publisher-id')) {
-				$fieldData['publisherId'] = $form->publication->getData('pub-id::publisher-id');
-			}
-			if ($form->publication->getData('pages')) {
-				$fieldData['pages'] = $form->publication->getData('pages');
-			}
-			if ($form->publication->getData('issueId')) {
-				$issue = Services::get('issue')->get($form->publication->getData('issueId'));
-				if ($issue) {
-					$fieldData['issueNumber'] = $issue->getNumber() ?? '';
-					$fieldData['issueVolume'] = $issue->getVolume() ?? '';
-					$fieldData['year'] = $issue->getYear() ?? '';
-				}
-			}
-			if ($suffixType === 'default') {
-				$fieldData['missingPartsLabel'] = __('plugins.pubIds.doi.editor.missingIssue');
-			} else  {
-				$fieldData['missingPartsLabel'] = __('plugins.pubIds.doi.editor.missingParts');
-			}
-			$form->addField(new \PKP\components\forms\FieldPubId('pub-id::doi', $fieldData));
 		}
 		else {
 			// create random DOI-Suffix
