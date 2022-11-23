@@ -387,6 +387,7 @@ class DOIPubIdPlugin extends PubIdPlugin {
 		$suffixType = $this->getSetting($form->submissionContext->getId(), 'doiSuffix');
 
 		$pattern = '';
+
 		if ($suffixType === 'default') {
 			$pattern = '%j.v%vi%i.%a';
 		} elseif ($suffixType === 'pattern') {
@@ -400,13 +401,13 @@ class DOIPubIdPlugin extends PubIdPlugin {
 			$randomLetter = substr(str_shuffle("abcdefghijklmnopqrstuvwxyz"), 0, 7); // 7 chars
 			$part1 = substr(str_shuffle($randomLetter . $uniqueId), 0, -16); // => 5 chars
 			$part2 = substr(str_shuffle($randomLetter . $uniqueId), 0, -16); // => 5 chars
-			$DoiSuffix = $part1."-".$part2;
+			$doiSuffix = $part1."-".$part2;
 
 			$fieldData = [
 				'label' => __('metadata.property.displayName.doi'),
 				'value' => $form->publication->getData('pub-id::doi'),
 				'prefix' => $prefix,
-				'suffix' => $DoiSuffix,
+				'suffix' => $doiSuffix,
 				'contextInitials' => PKPString::regexp_replace('/[^-._;()\/A-Za-z0-9]/', '', PKPString::strtolower($form->submissionContext->getData('acronym', $form->submissionContext->getData('primaryLocale')))) ?? '',
 				'separator' => '/',
 				'submissionId' => $form->publication->getData('submissionId'),
