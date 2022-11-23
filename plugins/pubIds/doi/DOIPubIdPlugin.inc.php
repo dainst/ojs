@@ -224,78 +224,6 @@ class DOIPubIdPlugin extends PubIdPlugin {
 	}
 
 	/**
-	 * @copydoc PubIdPlugin::getPubId()
-	 */
-	function constructRandomDOI($pubObject) {
-
-		// Get the pub id type
-		$pubIdType = $this->getPubIdType();
-
-		// If we already have an assigned pub id, use it.
-		$storedPubId = $pubObject->getStoredPubId($pubIdType);
-		if ($storedPubId) return $storedPubId;
-
-		// Determine the type of the publishing object.
-		$pubObjectType = $this->getPubObjectType($pubObject);
-
-		// Get the context id.
-		if (in_array($pubObjectType, array('Issue', 'Submission'))) {
-			$contextId = $pubObject->getJournalId();
-		} else {
-			// Retrieve the submission.
-			assert(is_a($pubObject, 'Representation') || is_a($pubObject, 'SubmissionFile'));
-			$submissionDao = Application::getSubmissionDAO();
-			$submission = $submissionDao->getById($pubObject->getSubmissionId(), null, true);
-			if (!$submission) return null;
-
-			// Now we can identify the context.
-			$contextId = $submission->getJournalId();
-		}
-
-		// Check the context
-		$context = $this->getContext($contextId);
-		if (!$context) return null;
-		$contextId = $context->getId();
-
-		// Check whether pub ids are enabled for the given object type.
-		$objectTypeEnabled = $this->isObjectTypeEnabled($pubObjectType, $contextId);
-		if (!$objectTypeEnabled) return null;
-
-		// Retrieve the pub id prefix.
-		$pubIdPrefix = $this->getSetting($contextId, $this->getPrefixFieldName());
-		if (empty($pubIdPrefix)) return null;
-
-		// Generate the pub id suffix.
-		$suffixFieldName = $this->getSuffixFieldName();
-		$suffixGenerationStrategy = $this->getSetting($contextId, $suffixFieldName);
-
-		switch ($suffixGenerationStrategy) {
-
-			case 'randomId':
-
-				// create random generated suffix;
-				$uniqueId = uniqid(); // 13 chars
-				$randomLetter = substr(str_shuffle("abcdefghijklmnopqrstuvwxyz"), 0, 7); // 7 chars
-				$part1 = substr(str_shuffle($randomLetter . $uniqueId), 0, -16); // => 5 chars
-				$part2 = substr(str_shuffle($randomLetter . $uniqueId), 0, -16); // => 5 chars
-				$pubIdSuffix = $part1."-".$part2;
-
-				break;
-
-			default:
-
-				$pubIdSuffix = $pubObject->getData($suffixFieldName);
-				break;
-		}
-		if (empty($pubIdSuffix)) return null;
-
-		// Construct the pub id from prefix and suffix.
-		$pubId = $this->constructPubId($pubIdPrefix, $pubIdSuffix, $contextId);
-
-		return $pubId;
-	}
-
-	/**
 	 * @copydoc PKPPubIdPlugin::validatePubId()
 	 */
 	function validatePubId($pubId) {
@@ -448,50 +376,62 @@ class DOIPubIdPlugin extends PubIdPlugin {
 
 		if ($form->id !== 'publicationIdentifiers') {
 			return;
-		};
+		}
 
 		if (!$this->getSetting($form->submissionContext->getId(), 'enablePublicationDoi')) {
 			return;
-		};
+		}
 
 		$prefix = $this->getSetting($form->submissionContext->getId(), 'doiPrefix');
-		$suffixType = $this->getSetting($form->submissionContext->getId(), 'doiSuffix');
 
-		if ($suffixType === 'customId') {
-			// Add a text field to enter a custom DOI:
+		$suffixType = $this->getSetting($form->submissionContext->getId(), 'doiSuffix');
+		$pattern = '';
+		if ($suffixType === 'default') {
+			$pattern = '%j.v%vi%i.%a';
+		} elseif ($suffixType === 'pattern') {
+			$pattern = $this->getSetting($form->submissionContext->getId(), 'doiPublicationSuffixPattern');
+		}
+
+		// Add a text field to enter the DOI if no pattern exists
+		if (!$pattern) {
 			$form->addField(new \PKP\components\forms\FieldText('pub-id::doi', [
 				'label' => __('metadata.property.displayName.doi'),
 				'description' => __('plugins.pubIds.doi.editor.doi.description', ['prefix' => $prefix]),
 				'value' => $form->publication->getData('pub-id::doi'),
 			]));
-		}
-		else {
-			// create random DOI-Suffix
-			$uniqueId = uniqid(); // 13 chars
-			$randomLetter = substr(str_shuffle("abcdefghijklmnopqrstuvwxyz"), 0, 7); // 7 chars
-			$part1 = substr(str_shuffle($randomLetter . $uniqueId), 0, -16); // => 5 chars
-			$part2 = substr(str_shuffle($randomLetter . $uniqueId), 0, -16); // => 5 chars
-			$pubIdSuffix = $part1."-".$part2;
-			$doi = $prefix . "/" . $pubIdSuffix;
-
-			// save random DOI as pub-id:doi of publication:
-			$submission = Services::get('submission')->get($form->publication->getData('submissionId'));
-			$submission->setStoredPubId('pub-id::doi', $doi);
-
-			// print_r($submission);
-
-			// Load the FieldDoi.js file that is required for this field
-			$this->addJavaScript(Application::get()->getRequest(), TemplateManager::getManager(Application::get()->getRequest()));
-
-			// set random DOI in PublicationsFormField (must be saved by user)
-			$form->addField(new \PKP\components\forms\FieldText('pub-id::doi', [
+		} else {
+			$fieldData = [
 				'label' => __('metadata.property.displayName.doi'),
-				'description' => __('plugins.pubIds.doi.manager.settings.doiSuffixRandomIdentifier'),
-				'Vorschlag' => $doi,
 				'value' => $form->publication->getData('pub-id::doi'),
-			]));
-		};
-
+				'prefix' => $prefix,
+				'pattern' => $pattern,
+				'contextInitials' => PKPString::regexp_replace('/[^-._;()\/A-Za-z0-9]/', '', PKPString::strtolower($form->submissionContext->getData('acronym', $form->submissionContext->getData('primaryLocale')))) ?? '',
+				'separator' => '/',
+				'submissionId' => $form->publication->getData('submissionId'),
+				'assignIdLabel' => __('plugins.pubIds.doi.editor.doi.assignDoi'),
+				'clearIdLabel' => __('plugins.pubIds.doi.editor.clearObjectsDoi'),
+			];
+			if ($form->publication->getData('pub-id::publisher-id')) {
+				$fieldData['publisherId'] = $form->publication->getData('pub-id::publisher-id');
+			}
+			if ($form->publication->getData('pages')) {
+				$fieldData['pages'] = $form->publication->getData('pages');
+			}
+			if ($form->publication->getData('issueId')) {
+				$issue = Services::get('issue')->get($form->publication->getData('issueId'));
+				if ($issue) {
+					$fieldData['issueNumber'] = $issue->getNumber() ?? '';
+					$fieldData['issueVolume'] = $issue->getVolume() ?? '';
+					$fieldData['year'] = $issue->getYear() ?? '';
+				}
+			}
+			if ($suffixType === 'default') {
+				$fieldData['missingPartsLabel'] = __('plugins.pubIds.doi.editor.missingIssue');
+			} else  {
+				$fieldData['missingPartsLabel'] = __('plugins.pubIds.doi.editor.missingParts');
+			}
+			$form->addField(new \PKP\components\forms\FieldPubId('pub-id::doi', $fieldData));
+		}
 	}
 
 	/**
@@ -561,56 +501,5 @@ class DOIPubIdPlugin extends PubIdPlugin {
 				'groupId' => 'default',
 			]));
 		}
-	}
-
-	/**
-	 * @copydoc PKPPubIdPlugin::addJavaScript()
-	 */
-	function addJavaScript($request, $templateMgr) {
-		$templateMgr->addJavaScript(
-			'urnCheckNo',
-			$request->getBaseUrl() . DIRECTORY_SEPARATOR . $this->getPluginPath() . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR . 'checkNumber.js',
-			array(
-				'inline' => false,
-				'contexts' => ['publicIdentifiersForm', 'backend'],
-			)
-		);
-	}
-
-	public function loadUrnFieldComponent($hookName, $args) {
-		$templateMgr = $args[0];
-		$template = $args[1];
-
-		if ($template !== 'workflow/workflow.tpl') {
-			return;
-		}
-
-		$templateMgr->addJavaScript(
-			'urn-field-component',
-			Application::get()->getRequest()->getBaseUrl() . '/' . $this->getPluginPath() . '/js/FieldDoi.js',
-			[
-				'contexts' => 'backend',
-				'priority' => STYLE_SEQUENCE_LAST,
-			]
-		);
-
-		$templateMgr->addStyleSheet(
-			'urn-field-component',
-			'
-				.pkpFormField--urn__input {
-					display: inline-block;
-				}
-
-				.pkpFormField--urn__button {
-					margin-left: 0.25rem;
-					height: 2.5rem; // Match input height
-				}
-			',
-			[
-				'contexts' => 'backend',
-				'inline' => true,
-				'priority' => STYLE_SEQUENCE_LAST,
-			]
-		);
 	}
 }

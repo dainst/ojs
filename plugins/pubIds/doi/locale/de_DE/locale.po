@@ -83,9 +83,6 @@ msgstr "%j.v%vi%i für Ausgaben<br />%j.v%vi%i.%a für Artikel<br />%j.v%vi%i.%a
 msgid "plugins.pubIds.doi.manager.settings.doiSuffixCustomIdentifier"
 msgstr "Geben Sie einen individuellen DOI-Suffix für jedes publizierte Element ein. Sie finden ein zusätzliches DOI-Eingabefeld auf der Metadatenseite jedes Elements."
 
-msgid "plugins.pubIds.doi.manager.settings.doiSuffixRandomIdentifier"
-msgstr "Mit dieser Option wird eine 8-stellige, zufallsgenerierte ID (bestehend aus Zahlen und Buchstaben) generiert."
-
 msgid "plugins.pubIds.doi.manager.settings.doiIssueSuffixPatternRequired"
 msgstr "Bitte geben Sie das DOI-Suffix-Muster für Ausgaben ein."
 
@@ -132,7 +129,7 @@ msgid "plugins.pubIds.doi.editor.patternNotResolved"
 msgstr "Es kann kein DOI zugewiesen werden, weil ein ungültiges Muster verwendet wird."
 
 msgid "plugins.pubIds.doi.editor.canBeAssigned"
-msgstr "Aktivieren Sie die Checkbox und speichern Sie das Formular, um dem Objekt einen DOI mit DOI-Präfix und einem zufallsgeneriertem DOI-Suffix (8-stellig) zuzuweisen."
+msgstr "Sie sehen eine Voransicht des DOI. Wählen Sie die Checkbox und speichern Sie das Formular, um den DOI zuzuweisen."
 
 msgid "plugins.pubIds.doi.editor.assigned"
 msgstr "Der DOI ist diesem Objekt vom Typ {$pubObjectType} zugewiesen."

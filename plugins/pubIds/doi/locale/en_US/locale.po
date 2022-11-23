@@ -80,9 +80,6 @@ msgstr "%j.v%vi%i for issues<br />%j.v%vi%i.%a for articles<br />%j.v%vi%i.%a.g%
 msgid "plugins.pubIds.doi.manager.settings.doiSuffixCustomIdentifier"
 msgstr "Enter an individual DOI suffix for each published item. You'll find an additional DOI input field on each item's meta-data page."
 
-msgid "plugins.pubIds.doi.manager.settings.doiSuffixRandomIdentifier"
-msgstr "This option generates an 8-digit, randomly generated ID (consisting of numbers and letters)."
-
 msgid "plugins.pubIds.doi.manager.settings.doiIssueSuffixPatternRequired"
 msgstr "Please enter the DOI suffix pattern for issues."
 
@@ -141,7 +138,7 @@ msgid "plugins.pubIds.doi.editor.patternNotResolved"
 msgstr "The DOI cannot be assigned because it contains an unresolved pattern."
 
 msgid "plugins.pubIds.doi.editor.canBeAssigned"
-msgstr "Activate the checkbox and save the form in order to assign a DOI with a DOI prefix and a randomly generated DOI suffix (8 digits) to the object."
+msgstr "What you see is a preview of the DOI. Select the checkbox and save the form to assign the DOI."
 
 msgid "plugins.pubIds.doi.editor.assigned"
 msgstr "The DOI is assigned to this {$pubObjectType}."

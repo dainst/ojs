@@ -38,7 +38,7 @@
 	{fbvFormArea id="doiSuffixFormArea" title="plugins.pubIds.doi.manager.settings.doiSuffix"}
 		<p class="pkp_help">{translate key="plugins.pubIds.doi.manager.settings.doiSuffix.description"}</p>
 		{fbvFormSection list="true"}
-			{if !in_array($doiSuffix, array("pattern", "customId", "randomId"))}
+			{if !in_array($doiSuffix, array("pattern", "customId"))}
 				{assign var="checked" value=true}
 			{else}
 				{assign var="checked" value=false}
@@ -48,9 +48,6 @@
 		{/fbvFormSection}
 		{fbvFormSection list="true"}
 			{fbvElement type="radio" id="doiSuffixCustomId" name="doiSuffix" value="customId" required="true" label="plugins.pubIds.doi.manager.settings.doiSuffixCustomIdentifier" checked=$doiSuffix|compare:"customId"}
-		{/fbvFormSection}
-		{fbvFormSection list="true"}
-		{fbvElement type="radio" id="doiSuffixCustomId" name="doiSuffix" value="randomId" required="true" label="plugins.pubIds.doi.manager.settings.doiSuffixRandomIdentifier" checked=$doiSuffix|compare:"randomId"}
 		{/fbvFormSection}
 		{fbvFormSection list="true"}
 			{fbvElement type="radio" id="doiSuffixPattern" name="doiSuffix" value="pattern" label="plugins.pubIds.doi.manager.settings.doiSuffixPattern" checked=$doiSuffix|compare:"pattern"}
