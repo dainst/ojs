@@ -415,7 +415,11 @@ class DOIPubIdPlugin extends PubIdPlugin {
 				'clearIdLabel' => __('plugins.pubIds.doi.editor.clearObjectsDoi'),
 			];
 
-			$form->addField(new \PKP\components\forms\FieldPubId('pub-id::doi', $fieldData));
+			$form->addField(new \PKP\components\forms\FieldHTML('doi', [
+				'label' => __('metadata.property.displayName.doi'),
+				'value' => $doiSuffix,
+			]));
+			// $form->addField(new \PKP\components\forms\FieldPubId('pub-id::doi', $fieldData));
 		}
 		// Add a text field to enter the DOI if no pattern exists
 		elseif (!$pattern) {
