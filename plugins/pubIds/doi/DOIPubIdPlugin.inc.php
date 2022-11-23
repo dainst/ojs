@@ -385,6 +385,7 @@ class DOIPubIdPlugin extends PubIdPlugin {
 		$prefix = $this->getSetting($form->submissionContext->getId(), 'doiPrefix');
 
 		$suffixType = $this->getSetting($form->submissionContext->getId(), 'doiSuffix');
+
 		$pattern = '';
 		if ($suffixType === 'default') {
 			$pattern = '%j.v%vi%i.%a';
@@ -392,14 +393,38 @@ class DOIPubIdPlugin extends PubIdPlugin {
 			$pattern = $this->getSetting($form->submissionContext->getId(), 'doiPublicationSuffixPattern');
 		}
 
+		// create random generated suffix:
+		if ($suffixType === "randomId") {
+
+			$uniqueId = uniqid(); // 13 chars
+			$randomLetter = substr(str_shuffle("abcdefghijklmnopqrstuvwxyz"), 0, 7); // 7 chars
+			$part1 = substr(str_shuffle($randomLetter . $uniqueId), 0, -16); // => 5 chars
+			$part2 = substr(str_shuffle($randomLetter . $uniqueId), 0, -16); // => 5 chars
+			$DoiSuffix = $part1."-".$part2;
+
+			$fieldData = [
+				'label' => __('metadata.property.displayName.doi'),
+				'value' => $form->publication->getData('pub-id::doi'),
+				'prefix' => $prefix,
+				'suffix' => $DoiSuffix,
+				'contextInitials' => PKPString::regexp_replace('/[^-._;()\/A-Za-z0-9]/', '', PKPString::strtolower($form->submissionContext->getData('acronym', $form->submissionContext->getData('primaryLocale')))) ?? '',
+				'separator' => '/',
+				'submissionId' => $form->publication->getData('submissionId'),
+				'assignIdLabel' => __('plugins.pubIds.doi.editor.doi.assignDoi'),
+				'clearIdLabel' => __('plugins.pubIds.doi.editor.clearObjectsDoi'),
+			];
+
+			$form->addField(new \PKP\components\forms\FieldPubId('pub-id::doi', $fieldData));
+		}
 		// Add a text field to enter the DOI if no pattern exists
-		if (!$pattern) {
+		elseif (!$pattern) {
 			$form->addField(new \PKP\components\forms\FieldText('pub-id::doi', [
 				'label' => __('metadata.property.displayName.doi'),
 				'description' => __('plugins.pubIds.doi.editor.doi.description', ['prefix' => $prefix]),
 				'value' => $form->publication->getData('pub-id::doi'),
 			]));
-		} else {
+		}
+		else {
 			$fieldData = [
 				'label' => __('metadata.property.displayName.doi'),
 				'value' => $form->publication->getData('pub-id::doi'),
