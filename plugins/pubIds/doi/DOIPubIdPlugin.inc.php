@@ -480,6 +480,9 @@ class DOIPubIdPlugin extends PubIdPlugin {
 
 			// print_r($submission);
 
+			// Load the FieldDOI.js file that is required for this field
+			$this->addJavaScript(Application::get()->getRequest(), TemplateManager::getManager(Application::get()->getRequest()));
+
 			// set random DOI in PublicationsFormField (must be saved by user)
 			$form->addField(new \PKP\components\forms\FieldText('pub-id::doi', [
 				'label' => __('metadata.property.displayName.doi'),
@@ -558,5 +561,56 @@ class DOIPubIdPlugin extends PubIdPlugin {
 				'groupId' => 'default',
 			]));
 		}
+	}
+
+	/**
+	 * @copydoc PKPPubIdPlugin::addJavaScript()
+	 */
+	function addJavaScript($request, $templateMgr) {
+		$templateMgr->addJavaScript(
+			'urnCheckNo',
+			$request->getBaseUrl() . DIRECTORY_SEPARATOR . $this->getPluginPath() . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR . 'checkNumber.js',
+			array(
+				'inline' => false,
+				'contexts' => ['publicIdentifiersForm', 'backend'],
+			)
+		);
+	}
+
+	public function loadUrnFieldComponent($hookName, $args) {
+		$templateMgr = $args[0];
+		$template = $args[1];
+
+		if ($template !== 'workflow/workflow.tpl') {
+			return;
+		}
+
+		$templateMgr->addJavaScript(
+			'urn-field-component',
+			Application::get()->getRequest()->getBaseUrl() . '/' . $this->getPluginPath() . '/js/FieldUrn.js',
+			[
+				'contexts' => 'backend',
+				'priority' => STYLE_SEQUENCE_LAST,
+			]
+		);
+
+		$templateMgr->addStyleSheet(
+			'urn-field-component',
+			'
+				.pkpFormField--urn__input {
+					display: inline-block;
+				}
+
+				.pkpFormField--urn__button {
+					margin-left: 0.25rem;
+					height: 2.5rem; // Match input height
+				}
+			',
+			[
+				'contexts' => 'backend',
+				'inline' => true,
+				'priority' => STYLE_SEQUENCE_LAST,
+			]
+		);
 	}
 }
