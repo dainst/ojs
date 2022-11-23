@@ -480,7 +480,7 @@ class DOIPubIdPlugin extends PubIdPlugin {
 
 			// print_r($submission);
 
-			// Load the FieldDOI.js file that is required for this field
+			// Load the FieldDoi.js file that is required for this field
 			$this->addJavaScript(Application::get()->getRequest(), TemplateManager::getManager(Application::get()->getRequest()));
 
 			// set random DOI in PublicationsFormField (must be saved by user)
@@ -587,7 +587,7 @@ class DOIPubIdPlugin extends PubIdPlugin {
 
 		$templateMgr->addJavaScript(
 			'urn-field-component',
-			Application::get()->getRequest()->getBaseUrl() . '/' . $this->getPluginPath() . '/js/FieldUrn.js',
+			Application::get()->getRequest()->getBaseUrl() . '/' . $this->getPluginPath() . '/js/FieldDoi.js',
 			[
 				'contexts' => 'backend',
 				'priority' => STYLE_SEQUENCE_LAST,
