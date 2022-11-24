@@ -405,21 +405,14 @@ class DOIPubIdPlugin extends PubIdPlugin {
 
 			$fieldData = [
 				'label' => __('metadata.property.displayName.doi'),
-				'value' => $form->publication->getData('pub-id::doi'),
-				'prefix' => $prefix,
-				'suffix' => $doiSuffix,
-				'contextInitials' => PKPString::regexp_replace('/[^-._;()\/A-Za-z0-9]/', '', PKPString::strtolower($form->submissionContext->getData('acronym', $form->submissionContext->getData('primaryLocale')))) ?? '',
-				'separator' => '/',
-				'submissionId' => $form->publication->getData('submissionId'),
-				'assignIdLabel' => __('plugins.pubIds.doi.editor.doi.assignDoi'),
-				'clearIdLabel' => __('plugins.pubIds.doi.editor.clearObjectsDoi'),
+				'description' => __('plugins.pubIds.doi.editor.doi.description', ['prefix' => $prefix]),
+				'value' => $doiSuffix,
 			];
 
-			$form->addField(new \PKP\components\forms\FieldHTML('doi', [
-				'label' => __('metadata.property.displayName.doi'),
-				'value' => $doiSuffix,
-			]));
-			// $form->addField(new \PKP\components\forms\FieldPubId('pub-id::doi', $fieldData));
+			// $form->publication->getData('pub-id::doi')
+
+			$form->addField(new \PKP\components\forms\FieldText('pub-id::doi', $fieldData));
+
 		}
 		// Add a text field to enter the DOI if no pattern exists
 		elseif (!$pattern) {
