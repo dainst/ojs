@@ -402,10 +402,12 @@ class DOIPubIdPlugin extends PubIdPlugin {
 			$part1 = substr(str_shuffle($randomLetter . $uniqueId), 0, -16); // => 5 chars
 			$part2 = substr(str_shuffle($randomLetter . $uniqueId), 0, -16); // => 5 chars
 			$doiSuffix = $part1."-".$part2;
+			$doi = $prefix . "/" . $doiSuffix;
 
 			$fieldData = [
 				'label' => __('metadata.property.displayName.doi'),
-				'description' => "Vorschlag: " . $doiSuffix,
+				'description' => "Vorschlag: <span id = 'generatedDoi'>" . $doi . "</span>",
+				'hidden-field' => $doi,
 				'value' => $form->publication->getData('pub-id::doi'),
 			];
 
