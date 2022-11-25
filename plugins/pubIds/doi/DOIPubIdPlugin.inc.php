@@ -406,12 +406,9 @@ class DOIPubIdPlugin extends PubIdPlugin {
 
 			$fieldData = [
 				'label' => __('metadata.property.displayName.doi'),
-				'description' => "Vorschlag: <span id = 'generatedDoi'>" . $doi . "</span>",
-				'hidden-field' => $doi,
+				'description' => __('plugins.pubIds.doi.editor.doi.description') . "<span id = 'generatedDoi' hidden='hidden'>" . $doi . "</span>",
 				'value' => $form->publication->getData('pub-id::doi'),
 			];
-
-			// $form->publication->getData('pub-id::doi')
 
 			$form->addField(new \PKP\components\forms\FieldText('pub-id::doi', $fieldData));
 
