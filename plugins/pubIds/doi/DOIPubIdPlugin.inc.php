@@ -410,6 +410,8 @@ class DOIPubIdPlugin extends PubIdPlugin {
 				'value' => $form->publication->getData('pub-id::doi'),
 			];
 
+			$this->addScript('addRandomDoi', 'js/addRandomDoi.js');
+
 			$form->addField(new \PKP\components\forms\FieldText('pub-id::doi', $fieldData));
 
 		}
