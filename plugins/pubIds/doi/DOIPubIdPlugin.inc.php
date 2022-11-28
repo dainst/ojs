@@ -410,7 +410,8 @@ class DOIPubIdPlugin extends PubIdPlugin {
 				'value' => $form->publication->getData('pub-id::doi'),
 			];
 
-			$this->addScript('addRandomDoi', 'js/addRandomDoi.js');
+			// Load the addRandomDoi.js
+			$this->addJavaScript(Application::get()->getRequest(), TemplateManager::getManager(Application::get()->getRequest()));
 
 			$form->addField(new \PKP\components\forms\FieldText('pub-id::doi', $fieldData));
 
@@ -526,4 +527,19 @@ class DOIPubIdPlugin extends PubIdPlugin {
 			]));
 		}
 	}
+
+	/**
+	 * @copydoc PKPPubIdPlugin::addJavaScript()
+	 */
+	function addJavaScript($request, $templateMgr) {
+		$templateMgr->addJavaScript(
+			'addRandomDoi',
+			$request->getBaseUrl() . DIRECTORY_SEPARATOR . $this->getPluginPath() . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR . 'addRandomDoi.js',
+			array(
+				'inline' => false,
+				'contexts' => ['publicIdentifiersForm', 'backend'],
+			)
+		);
+	}
+
 }
