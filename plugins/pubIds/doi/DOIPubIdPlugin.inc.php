@@ -407,8 +407,8 @@ class DOIPubIdPlugin extends PubIdPlugin {
 				'label' => __('metadata.property.displayName.doi'),
 				'description' => __('plugins.pubIds.doi.editor.doi.description', ['prefix' => $prefix]),
 				'prefix' => $prefix,
-				'value' => $form->publication->getData('pub-id::doi'),
-				'helpTopic' => $doi,
+				'value' => $form->publication->getData('pub-id::doi'), $doi,
+				'optIntoEdit' => true,
 			];
 
 			print_r($form);
