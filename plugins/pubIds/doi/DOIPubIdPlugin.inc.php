@@ -405,9 +405,8 @@ class DOIPubIdPlugin extends PubIdPlugin {
 
 			$fieldData = [
 				'label' => __('metadata.property.displayName.doi'),
-				'description' => __('plugins.pubIds.doi.editor.doi.description', ['prefix' => $prefix]),
-				'prefix' => $prefix . "/",
-				'value' => $form->publication->getData('pub-id::doi'), $doi,
+				'description' => __('plugins.pubIds.doi.editor.doi.description') . "<div id = \"RandomDoi\">$doi</div>",
+				'value' => $form->publication->getData('pub-id::doi'),
 				'optIntoEdit' => true,
 				'optIntoEditLabel' => "Edit",
 			];
