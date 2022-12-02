@@ -58,7 +58,6 @@ class DOIPubIdPlugin extends PubIdPlugin {
 		return __('plugins.pubIds.doi.description');
 	}
 
-
 	//
 	// Implement template methods from PubIdPlugin.
 	//
@@ -407,8 +406,11 @@ class DOIPubIdPlugin extends PubIdPlugin {
 			$fieldData = [
 				'label' => __('metadata.property.displayName.doi'),
 				'description' => __('plugins.pubIds.doi.editor.doi.description') . "<span id = 'generatedDoi' hidden='hidden'>" . $doi . "</span>",
+				'prefix' => $doi,
 				'value' => $form->publication->getData('pub-id::doi'),
 			];
+
+			print_r($form);
 
 			// Load the addRandomDoi.js
 			$this->addJavaScript(Application::get()->getRequest(), TemplateManager::getManager(Application::get()->getRequest()));
