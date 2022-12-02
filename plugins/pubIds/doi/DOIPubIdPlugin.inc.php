@@ -401,17 +401,17 @@ class DOIPubIdPlugin extends PubIdPlugin {
 			$part1 = substr(str_shuffle($randomLetter . $uniqueId), 0, -16); // => 5 chars
 			$part2 = substr(str_shuffle($randomLetter . $uniqueId), 0, -16); // => 5 chars
 			$doiSuffix = $part1."-".$part2;
-			$doi = $prefix . "/" . $doiSuffix;
+			$prefix_with_sep = $prefix . "/";
+			$doi = $prefix_with_sep . $doiSuffix;
 
 			$fieldData = [
 				'label' => __('metadata.property.displayName.doi'),
 				'description' => __('plugins.pubIds.doi.editor.doi.description', ['prefix' => $prefix]),
-				'prefix' => $prefix,
+				'prefix' => $prefix_with_sep,
 				'value' => $form->publication->getData('pub-id::doi'), $doi,
 				'optIntoEdit' => true,
+				'optIntoEditLabel' => "Edit",
 			];
-
-			print_r($form);
 
 			// Load the addRandomDoi.js
 			$this->addJavaScript(Application::get()->getRequest(), TemplateManager::getManager(Application::get()->getRequest()));
