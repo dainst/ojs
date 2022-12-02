@@ -401,13 +401,12 @@ class DOIPubIdPlugin extends PubIdPlugin {
 			$part1 = substr(str_shuffle($randomLetter . $uniqueId), 0, -16); // => 5 chars
 			$part2 = substr(str_shuffle($randomLetter . $uniqueId), 0, -16); // => 5 chars
 			$doiSuffix = $part1."-".$part2;
-			$prefix_with_sep = $prefix . "/";
-			$doi = $prefix_with_sep . $doiSuffix;
+			$doi = $prefix . $doiSuffix;
 
 			$fieldData = [
 				'label' => __('metadata.property.displayName.doi'),
 				'description' => __('plugins.pubIds.doi.editor.doi.description', ['prefix' => $prefix]),
-				'prefix' => $prefix_with_sep,
+				'prefix' => $prefix . "/",
 				'value' => $form->publication->getData('pub-id::doi'), $doi,
 				'optIntoEdit' => true,
 				'optIntoEditLabel' => "Edit",
