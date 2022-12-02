@@ -401,11 +401,20 @@ class DOIPubIdPlugin extends PubIdPlugin {
 			$part1 = substr(str_shuffle($randomLetter . $uniqueId), 0, -16); // => 5 chars
 			$part2 = substr(str_shuffle($randomLetter . $uniqueId), 0, -16); // => 5 chars
 			$doiSuffix = $part1."-".$part2;
-			$doi = $prefix . $doiSuffix;
+			$doi = $prefix . "/" . $doiSuffix;
+
+			// Workaround:
+			// - DOI-Vorschlag anbieten, falls $form->publication->getData('pub-id::doi') is empty (?).
+			// - ggf. einen button Zum Kopieren ins Clipboard
+
+			print_r($form->publication->getData('pub-id::doi'));
+
+			$description = "Es ist noch kein DOI vorhanden. Kopiere den DOI, klicke auf Edit und füge ihn in das Feld ein.
+			<div id = \"DAI-DOI\"><span id = \"randomDoi\">$doi</span><button onclick = \"copyDoi\"></div>";
 
 			$fieldData = [
 				'label' => __('metadata.property.displayName.doi'),
-				'description' => __('plugins.pubIds.doi.editor.doi.description') . "<div id = \"RandomDoi\">$doi</div>",
+				'description' => $description,
 				'value' => $form->publication->getData('pub-id::doi'),
 				'optIntoEdit' => true,
 				'optIntoEditLabel' => "Edit",
