@@ -405,12 +405,15 @@ class DOIPubIdPlugin extends PubIdPlugin {
 
 			// Workaround:
 			// - DOI-Vorschlag anbieten, falls $form->publication->getData('pub-id::doi') is empty (?).
-			// - ggf. einen button Zum Kopieren ins Clipboard
 
 			print_r($form->publication->getData('pub-id::doi'));
 
-			$description = "Es ist noch kein DOI vorhanden. Kopiere den DOI, klicke auf Edit und füge ihn in das Feld ein.
-			<div id = \"DAI-DOI\"><span id = \"randomDoi\">$doi</span><button onclick = \"copyDoi\"></div>";
+			$description = "<p>Es ist noch kein DOI fest zugewiesen.</p>
+					<div id=\"DAI-DOI\">Zufallsgenerierter DOI:
+	   					<input type=\"text\" value=\"$doi\" id=\"randomDoi\">$doi</input>
+						<p>Kopiere den zufallsgenerierten DOI und klicke dann auf Edit.
+						<p>Füge den kopierten DOI in das Feld daneben ein und klicke unten auf speichern.</p>
+					</div>";
 
 			$fieldData = [
 				'label' => __('metadata.property.displayName.doi'),
@@ -419,9 +422,6 @@ class DOIPubIdPlugin extends PubIdPlugin {
 				'optIntoEdit' => true,
 				'optIntoEditLabel' => "Edit",
 			];
-
-			// Load the addRandomDoi.js
-			$this->addJavaScript(Application::get()->getRequest(), TemplateManager::getManager(Application::get()->getRequest()));
 
 			$form->addField(new \PKP\components\forms\FieldText('pub-id::doi', $fieldData));
 
@@ -536,20 +536,6 @@ class DOIPubIdPlugin extends PubIdPlugin {
 				'groupId' => 'default',
 			]));
 		}
-	}
-
-	/**
-	 * @copydoc PKPPubIdPlugin::addJavaScript()
-	 */
-	function addJavaScript($request, $templateMgr) {
-		$templateMgr->addJavaScript(
-			'addRandomDoi',
-			$request->getBaseUrl() . DIRECTORY_SEPARATOR . $this->getPluginPath() . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR . 'addRandomDoi.js',
-			array(
-				'inline' => false,
-				'contexts' => ['publicIdentifiersForm', 'backend'],
-			)
-		);
 	}
 
 }
