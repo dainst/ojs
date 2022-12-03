@@ -403,17 +403,20 @@ class DOIPubIdPlugin extends PubIdPlugin {
 			$doiSuffix = $part1."-".$part2;
 			$doi = $prefix . "/" . $doiSuffix;
 
-			// Workaround:
-			// - DOI-Vorschlag anbieten, falls $form->publication->getData('pub-id::doi') is empty (?).
+			// Show DOI assigned to pubObject if available:
+			if($form->publication->getData('pub-id::doi')) {
 
-			print_r($form->publication->getData('pub-id::doi'));
-
-			$description = "<p>Es ist noch kein DOI fest zugewiesen.</p>
+				$description = "Das Publikationsobjekt hat folgenden DOI.";
+			}
+			// Show random generated id and some hints to assign it manually.
+			else {
+				$description = "<p>Dem Publikationsobjekt ist noch kein DOI fest zugewiesen.</p>
 					<div id=\"DAI-DOI\">Zufallsgenerierter DOI:
-	   					<input type=\"text\" value=\"$doi\" id=\"randomDoi\">$doi</input>
+	   					<input type=\"text\" value=\"$doi\" id=\"randomDoi\"></input>
 						<p>Kopiere den zufallsgenerierten DOI und klicke dann auf Edit.
 						<p>Füge den kopierten DOI in das Feld daneben ein und klicke unten auf speichern.</p>
 					</div>";
+			}
 
 			$fieldData = [
 				'label' => __('metadata.property.displayName.doi'),
