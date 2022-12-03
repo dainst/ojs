@@ -396,27 +396,29 @@ class DOIPubIdPlugin extends PubIdPlugin {
 		// create random generated suffix:
 		if ($suffixType === "randomId") {
 
-			$uniqueId = uniqid(); // 13 chars
-			$randomLetter = substr(str_shuffle("abcdefghijklmnopqrstuvwxyz"), 0, 7); // 7 chars
-			$part1 = substr(str_shuffle($randomLetter . $uniqueId), 0, -16); // => 5 chars
-			$part2 = substr(str_shuffle($randomLetter . $uniqueId), 0, -16); // => 5 chars
-			$doiSuffix = $part1."-".$part2;
-			$doi = $prefix . "/" . $doiSuffix;
-
 			// Show DOI assigned to pubObject if available:
 			if($form->publication->getData('pub-id::doi')) {
 
-				$description = "Das Publikationsobjekt hat folgenden DOI.";
+				$description = "Der DOI des Publikationsobjekts ist:";
 			}
-			// Show random generated id and some hints to assign it manually.
+			// Create random generated id and show some hints to assign it manually.
 			else {
-				$description = "<p>Dem Publikationsobjekt ist noch kein DOI fest zugewiesen.</p>
+
+				$uniqueId = uniqid(); // 13 chars
+				$randomLetter = substr(str_shuffle("abcdefghijklmnopqrstuvwxyz"), 0, 7); // 7 chars
+				$part1 = substr(str_shuffle($randomLetter . $uniqueId), 0, -16); // => 5 chars
+				$part2 = substr(str_shuffle($randomLetter . $uniqueId), 0, -16); // => 5 chars
+				$doiSuffix = $part1."-".$part2;
+				$doi = $prefix . "/" . $doiSuffix;
+
+				$description = "<p>Dem Publikationsobjekt wurde noch kein DOI fest zugewiesen.</p>
 					<div id=\"DAI-DOI\">Zufallsgenerierter DOI:
 	   					<input type=\"text\" value=\"$doi\" id=\"randomDoi\"></input>
-						<p>Kopiere den zufallsgenerierten DOI und klicke dann auf Edit.
-						<p>Füge den kopierten DOI in das Feld daneben ein und klicke unten auf speichern.</p>
+						<p>- Kopiere den zufallsgenerierten DOI.</p>
+						<p>- Klicke auf Edit und füge den kopierten DOI in das Feld daneben ein.</p>
+						<p>- Klicke unten auf Speichern.</p>
 					</div>";
-			}
+			};
 
 			$fieldData = [
 				'label' => __('metadata.property.displayName.doi'),
