@@ -651,19 +651,19 @@ msgid "submission.event.layout.layoutComplete"
 msgstr "Layout abgeschlossen"
 
 msgid "reader.subscribersOnly"
-msgstr "Nur für Abonnent/innen"
+msgstr "Nur für Zeitschriften-Manager"
 
 msgid "reader.subscriptionRequiredLoginText"
-msgstr "Für den Zugang ist ein Abonnement erforderlich. Um Ihr Abonnement zu bestätigen, loggen Sie sich bei der Zeitschrift ein."
+msgstr "Der Artikel ist nicht als open-Access-Publikation frei abrufbar."
 
 msgid "reader.openAccess"
 msgstr "Freier Zugang (Open Access)"
 
 msgid "reader.subscriptionAccess"
-msgstr "Zugang für Abonnent/innen"
+msgstr "Der Zugang ist beschränkt."
 
 msgid "reader.subscriptionOrFeeAccess"
-msgstr "Zugang für Abonnent/innen oder durch Zahlung einer Gebühr"
+msgstr "Der Zugang ist beschränkt."
 
 msgid "reader.purchasePrice"
 msgstr "({$currency} {$price})"

@@ -672,19 +672,19 @@ msgid "submission.event.layout.layoutComplete"
 msgstr "Layout assignment completed"
 
 msgid "reader.subscribersOnly"
-msgstr "Subscribers Only"
+msgstr "Journal-Managers only"
 
 msgid "reader.subscriptionRequiredLoginText"
-msgstr "Subscription required to access item. To verify subscription, log in to journal."
+msgstr "The article is not freely available ."
 
 msgid "reader.openAccess"
-msgstr "Open Access"
+msgstr "Freier Zugang (Open Access)"
 
 msgid "reader.subscriptionAccess"
-msgstr "Requires Subscription"
+msgstr "Access restricted."
 
 msgid "reader.subscriptionOrFeeAccess"
-msgstr "Requires Subscription or Fee"
+msgstr "Access restricted."
 
 msgid "reader.purchasePrice"
 msgstr "({$currency} {$price})"
