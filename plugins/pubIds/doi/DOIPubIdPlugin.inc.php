@@ -69,6 +69,78 @@ class DOIPubIdPlugin extends PubIdPlugin {
 	}
 
 	/**
+	 * @copydoc PubIdPlugin::getPubId()
+	 */
+	function getPubId($pubObject) {
+
+		// Get the pub id type
+		$pubIdType = $this->getPubIdType();
+
+		// If we already have an assigned pub id, use it.
+		$storedPubId = $pubObject->getStoredPubId($pubIdType);
+		if ($storedPubId) return $storedPubId;
+
+		// Determine the type of the publishing object.
+		$pubObjectType = $this->getPubObjectType($pubObject);
+
+		// Get the context id.
+		if (in_array($pubObjectType, array('Issue', 'Submission'))) {
+			$contextId = $pubObject->getJournalId();
+		} else {
+			// Retrieve the submission.
+			assert(is_a($pubObject, 'Representation') || is_a($pubObject, 'SubmissionFile'));
+			$submissionDao = Application::getSubmissionDAO();
+			$submission = $submissionDao->getById($pubObject->getSubmissionId(), null, true);
+			if (!$submission) return null;
+
+			// Now we can identify the context.
+			$contextId = $submission->getJournalId();
+		}
+
+		// Check the context
+		$context = $this->getContext($contextId);
+		if (!$context) return null;
+		$contextId = $context->getId();
+
+		// Check whether pub ids are enabled for the given object type.
+		$objectTypeEnabled = $this->isObjectTypeEnabled($pubObjectType, $contextId);
+		if (!$objectTypeEnabled) return null;
+
+		// Retrieve the pub id prefix.
+		$pubIdPrefix = $this->getSetting($contextId, $this->getPrefixFieldName());
+		if (empty($pubIdPrefix)) return null;
+
+		// Generate the pub id suffix.
+		$suffixFieldName = $this->getSuffixFieldName();
+		$suffixGenerationStrategy = $this->getSetting($contextId, $suffixFieldName);
+
+		switch ($suffixGenerationStrategy) {
+
+			case 'randomId':
+
+				// create random generated suffix;
+				$uniqueId = uniqid(); // 13 chars
+				$randomLetter = substr(str_shuffle("abcdefghijklmnopqrstuvwxyz"), 0, 7); // 7 chars
+				$part1 = substr(str_shuffle($randomLetter . $uniqueId), 0, -16); // => 5 chars
+				$part2 = substr(str_shuffle($randomLetter . $uniqueId), 0, -16); // => 5 chars
+				$pubIdSuffix = $part1."-".$part2;
+
+				break;
+
+			default:
+
+				$pubIdSuffix = $pubObject->getData($suffixFieldName);
+				break;
+		}
+		if (empty($pubIdSuffix)) return null;
+
+		// Construct the pub id from prefix and suffix.
+		$pubId = $this->constructPubId($pubIdPrefix, $pubIdSuffix, $contextId);
+
+		return $pubId;
+	}
+
+	/**
 	 * @copydoc PKPPubIdPlugin::getPubIdType()
 	 */
 	function getPubIdType() {
