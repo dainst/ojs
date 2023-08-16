@@ -1296,7 +1296,7 @@ msgid "current.noCurrentIssue"
 msgstr "Nessun numero disponibile"
 
 msgid "current.noCurrentIssueDesc"
-msgstr "Questa rivista non ha ancora pubblicato alcun numero."
+msgstr "Non ci sono ancora edizioni digitali per questa rivista."
 
 msgid "archive.archives"
 msgstr "Archivio"

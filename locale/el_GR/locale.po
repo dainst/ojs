@@ -1321,7 +1321,7 @@ msgid "current.noCurrentIssue"
 msgstr "Δεν υπάρχει τρέχον τεύχος"
 
 msgid "current.noCurrentIssueDesc"
-msgstr "Δεν υπάρχουν δημοσιευμένα τεύχη για το περιοδικό αυτό."
+msgstr "Δεν υπάρχουν ακόμα ψηφιακές εκδόσεις για αυτό το περιοδικό."
 
 msgid "archive.archives"
 msgstr "Αρχείο τευχών"

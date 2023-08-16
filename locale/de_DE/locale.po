@@ -1433,7 +1433,7 @@ msgid "current.noCurrentIssue"
 msgstr "Keine aktuelle Ausgabe"
 
 msgid "current.noCurrentIssueDesc"
-msgstr "Von der Zeitschrift ist keine Ausgabe erschienen."
+msgstr "Von der Zeitschrift ist keine digitale Ausgabe erschienen."
 
 msgid "archive.archives"
 msgstr "Archiv"

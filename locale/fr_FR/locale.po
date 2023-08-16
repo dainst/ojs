@@ -957,7 +957,7 @@ msgid "current.noCurrentIssue"
 msgstr "Aucun numéro courant"
 
 msgid "current.noCurrentIssueDesc"
-msgstr "Cette revue n'a publié aucun numéro."
+msgstr "Il n'y a pas encore d'édition numérique pour ce magazine."
 
 msgid "archive.archives"
 msgstr "Archives"
