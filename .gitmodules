@@ -74,3 +74,5 @@
 [submodule "plugins/generic/piwik"]
 	path = plugins/generic/piwik
 	url = https://github.com/pkp/piwik.git
+[submodule "publications-theme"]
+	branch = main
