@@ -25,6 +25,10 @@
 				"in:issue,submission"
 			]
 		},
+		"currentIssueId": {
+			"type": "integer",
+			"apiSummary": true
+		},
 		"delayedOpenAccessDuration": {
 			"type": "integer",
 			"validation": [
@@ -34,6 +38,26 @@
 		"delayedOpenAccessPolicy": {
 			"type": "string",
 			"multilingual": true,
+			"validation": [
+				"nullable"
+			]
+		},
+		"enabledDoiTypes": {
+			"type": "array",
+			"items": {
+				"type": "string",
+				"validation": [
+					"in:publication,representation,issue"
+				]
+			},
+		  	"default": ["publication"]
+		},
+		"doiCreationTime": {
+			"type": "string",
+			"default": "copyEditCreationTime"
+		},
+		"doiIssueSuffixPattern": {
+			"type": "string",
 			"validation": [
 				"nullable"
 			]
@@ -94,7 +118,7 @@
 			"properties": {
 				"temporaryFileId": {
 					"type": "integer",
-					"writeOnly": "true"
+					"writeOnly": true
 				},
 				"name": {
 					"type": "string"
@@ -226,6 +250,13 @@
 				"nullable"
 			]
 		},
+		"publisherUrl": {
+			"type": "string",
+			"validation": [
+				"nullable",
+				"url"
+			]
+		},
 		"publishingMode": {
 			"type": "integer",
 			"validation": [
@@ -341,6 +372,11 @@
 			"validation": [
 				"nullable"
 			]
+		},
+		"doiVersioning": {
+		  	"type": "boolean",
+		  	"default": false,
+		  	"description": "Whether each publication version should receive a unique DOI"
 		}
 	}
 }

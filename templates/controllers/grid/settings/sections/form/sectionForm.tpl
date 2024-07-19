@@ -15,7 +15,7 @@
 	{rdelim});
 </script>
 
-<form class="pkp_form" id="sectionForm" method="post" action="{url router=$smarty.const.ROUTE_COMPONENT component="grid.settings.sections.SectionGridHandler" op="updateSection" sectionId=$sectionId}">
+<form class="pkp_form" id="sectionForm" method="post" action="{url router=\PKP\core\PKPApplication::ROUTE_COMPONENT component="grid.settings.sections.SectionGridHandler" op="updateSection" sectionId=$sectionId}">
 	{csrf}
 	<input type="hidden" name="sectionId" value="{$sectionId|default:""|escape}"/>
 
@@ -52,7 +52,7 @@
 			{fbvElement type="checkbox" id="metaReviewed" checked=$metaReviewed label="manager.sections.submissionReview"}
 			{fbvElement type="checkbox" id="abstractsNotRequired" checked=$abstractsNotRequired label="manager.sections.abstractsNotRequired"}
 			{fbvElement type="checkbox" id="metaIndexed" checked=$metaIndexed label="manager.sections.submissionIndexing"}
-			{fbvElement type="checkbox" id="editorRestriction" checked=$editorRestriction label="manager.sections.editorRestriction"}
+			{fbvElement type="checkbox" id="editorRestricted" checked=$editorRestricted label="manager.sections.editorRestriction"}
 			{fbvElement type="checkbox" id="hideTitle" checked=$hideTitle label="manager.sections.hideTocTitle"}
 			{fbvElement type="checkbox" id="hideAuthor" checked=$hideAuthor label="manager.sections.hideTocAuthor"}
 		{/fbvFormSection}
@@ -62,14 +62,22 @@
 		{/fbvFormSection}
 	{/fbvFormArea}
 
-	{fbvFormSection list=true title="user.role.subEditors"}
-		{if count($subeditors)}
-			{foreach from=$subeditors item="subeditor" key="id"}
-				{fbvElement type="checkbox" id="subEditors[]" value=$id checked=in_array($id, $assignedSubeditors) label=$subeditor|escape translate=false}
-			{/foreach}
-		{else}
-			<span class="pkp_form_error"><p>{translate key="manager.section.noSectionEditors"}</p></span>
-		{/if}
+	{fbvFormSection list=true title="manager.sections.form.assignEditors"}
+	<div>{translate key="manager.sections.form.assignEditors.description"}</div>
+	{foreach from=$assignableUserGroups item="assignableUserGroup"}
+		{assign var="role" value=$assignableUserGroup.userGroup->getLocalizedName()}
+		{assign var="userGroupId" value=$assignableUserGroup.userGroup->getId()}
+		{foreach from=$assignableUserGroup.users item=$username key="id"}
+			{fbvElement
+				type="checkbox"
+				id="subEditors[{$userGroupId|escape}][]"
+				value=$id
+				checked=(isset($subeditorUserGroups[$id]) && in_array($userGroupId, $subeditorUserGroups[$id]))
+				label={translate key="manager.sections.form.assignEditorAs" name=$username|escape role=$role|escape}
+				translate=false
+			}
+		{/foreach}
+	{/foreach}
 	{/fbvFormSection}
 
 	{fbvFormButtons submitText="common.save"}
