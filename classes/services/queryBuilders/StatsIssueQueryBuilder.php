@@ -69,7 +69,7 @@ class StatsIssueQueryBuilder extends PKPStatsQueryBuilder
     {
         return $this->_getObject()
             ->select([StatisticsHelper::STATISTICS_DIMENSION_ISSUE_ID])
-            ->groupBy(StatisticsHelper::STATISTICS_DIMENSION_ISSUE_ID);
+            ->distinct();
     }
 
     /**

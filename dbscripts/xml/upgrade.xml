@@ -193,6 +193,7 @@
 		<migration class="APP\migration\upgrade\v3_4_0\I7513_DoiSettings"/>
 		<migration class="PKP\migration\upgrade\v3_4_0\I7486_RenameUnconsideredColumnToConsidered"/>
 		<migration class="PKP\migration\upgrade\v3_4_0\I7486_RemoveItemViewsTable"/>
+		<migration class="PKP\migration\upgrade\v3_4_0\I8737_SectionEditorsUniqueIndexUpdate"/>
 		<migration class="PKP\migration\upgrade\v3_4_0\I8508_ConvertCurrentLogFile"/>
 		<migration class="PKP\migration\upgrade\v3_4_0\I8866_DispatchRegionCodesFixingJobs"/>
 		<migration class="APP\migration\upgrade\v3_4_0\I8992_FixEmptyUrlPaths"/>
@@ -219,20 +220,6 @@
 	<upgrade minversion="3.1.0.0" maxversion="3.4.0.4">
 		<migration class="PKP\migration\upgrade\v3_4_0\I9627_AddUsageStatsTemporaryTablesIndexes"/>
 		<migration class="PKP\migration\upgrade\v3_4_0\I9535_FixEmptyFileStage"/>
-	</upgrade>
-
-	<upgrade minversion="3.1.0.0" maxversion="3.4.0.5">
-		<migration class="PKP\migration\upgrade\v3_4_0\I9830_FixEmptyUserLocales"/>
-	</upgrade>
-
-	<upgrade minversion="3.4.0.0" maxversion="3.4.0.5">
-		<!-- Only new 3.4 installations need this fix -->
-		<migration class="PKP\migration\upgrade\v3_4_0\I8592_SiteNotificationSubscriptions"/>
-	</upgrade>
-
-	<upgrade minversion="3.4.0.0" maxversion="3.4.9.9">
-		<!-- Needs to be re-executed on every minor upgrade, the user might still be using an outdated plugin -->
-		<migration class="APP\migration\upgrade\v3_4_0\I9813_QuickSubmitSubmissionProgressType"/>
 	</upgrade>
 
 	<!-- update plugin configuration - should be done as the final upgrade task -->

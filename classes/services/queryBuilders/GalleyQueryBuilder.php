@@ -56,11 +56,13 @@ class GalleyQueryBuilder implements EntityQueryBuilderInterface
     {
         return $this
             ->getQuery()
-            ->getCountForPagination();
+            ->select('g.galley_id')
+            ->get()
+            ->count();
     }
 
     /**
-     * @copydoc PKP\services\queryBuilders\interfaces\EntityQueryBuilderInterface::getIds()
+     * @copydoc PKP\services\queryBuilders\interfaces\EntityQueryBuilderInterface::getCount()
      */
     public function getIds()
     {
@@ -72,7 +74,7 @@ class GalleyQueryBuilder implements EntityQueryBuilderInterface
     }
 
     /**
-     * @copydoc PKP\services\queryBuilders\interfaces\EntityQueryBuilderInterface::getQuery()
+     * @copydoc PKP\services\queryBuilders\interfaces\EntityQueryBuilderInterface::getCount()
      */
     public function getQuery()
     {

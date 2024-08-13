@@ -3,15 +3,13 @@
 # Pierre Lasou <pierre.lasou@bibl.ulaval.ca>, 2023.
 # Stefan Schneider <mail@stefan-schneider.at>, 2023.
 # Nicolas Dickner <dickner.nicolas@uqam.ca>, 2023.
-# "Marie-Hélène Vézina [UdeMontréal]" <marie-helene.vezina@umontreal.ca>, 2024.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-10-15T14:05:03-07:00\n"
-"PO-Revision-Date: 2024-04-27 05:12+0000\n"
-"Last-Translator: \"Marie-Hélène Vézina [UdeMontréal]\" <marie-helene."
-"vezina@umontreal.ca>\n"
+"PO-Revision-Date: 2023-08-23 15:29+0000\n"
+"Last-Translator: Pierre Lasou <pierre.lasou@bibl.ulaval.ca>\n"
 "Language-Team: French (Canada) <http://translate.pkp.sfu.ca/projects/ojs/"
 "manager/fr_CA/>\n"
 "Language: fr_CA\n"
@@ -19,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.18.2\n"
+"X-Generator: Weblate 4.13.1\n"
 
 # localization file for fr_CA. Last revision 2019-10-22T11:05:12 by Marie-Hélène Vézina, Bibliothèques, Université de Montréal.
 msgid "manager.distribution.access"
@@ -1999,6 +1997,7 @@ msgstr ""
 msgid "manager.publication.library"
 msgstr "Bibliothèque éditoriale"
 
+#, fuzzy
 msgid "manager.setup.copyrightYearBasis"
 msgstr "Baser l'année du droit d'auteur du nouvel article sur"
 
@@ -2116,6 +2115,9 @@ msgstr "Marquer comme enregistré"
 msgid "plugins.importexport.common.action.register"
 msgstr "Enregistrer"
 
+msgid "plugins.importexport.common.validation"
+msgstr "Valider le XML avant l'exportation et l'enregistrement."
+
 msgid "plugins.importexport.common.error.noObjectsSelected"
 msgstr "Aucun objet sélectionné."
 
@@ -2174,8 +2176,9 @@ msgstr ""
 msgid "stats.context.downloadReport.downloadContext.description"
 msgstr "Nombre de vues sur la page d'accueil de la revue."
 
+#, fuzzy
 msgid "stats.context.downloadReport.downloadContext"
-msgstr "Téléchargements de la revue"
+msgstr "Téléchargement de la revue"
 
 msgid "stats.issueStats"
 msgstr "Statistiques du numéro"
@@ -2247,8 +2250,9 @@ msgstr ""
 "Télécharger un fichier CSV/Excel avec les statistiques d'utilisation des "
 "articles correspondants aux paramètres suivants."
 
+#, fuzzy
 msgid "stats.publications.downloadReport.downloadSubmissions"
-msgstr "Téléchargements d'articles"
+msgstr "Téléchargements des articles"
 
 msgid "stats.publications.downloadReport.downloadSubmissions.description"
 msgstr ""
@@ -2605,11 +2609,11 @@ msgstr "Les numéros demandés n'ont pu être trouvés"
 
 #, fuzzy
 msgid "doi.manager.submissionDois"
-msgstr "DOIs d'article"
+msgstr "DOI de l'article"
 
 #, fuzzy
 msgid "doi.manager.issueDois"
-msgstr "DOIs du numéro"
+msgstr "DOI du numéro"
 
 msgid "mailable.decision.initialDecline.notifyAuthor.description"
 msgstr ""
@@ -2630,6 +2634,7 @@ msgstr ""
 "de la revue lui a créé un abonnement. Il fournit l'adresse URL de la revue "
 "ainsi que les instructions pour y accéder."
 
+#, fuzzy
 msgid "mailable.subscriptionExpiresSoon.name"
 msgstr "L'abonnement arrive bientôt à échéance"
 
@@ -2638,6 +2643,7 @@ msgstr ""
 "Ce courriel avise un-e abonné-e que son abonnement expirera sous peu. Il "
 "fournit l'adresse URL de la revue, ainsi que les instructions pour y accéder."
 
+#, fuzzy
 msgid "mailable.subscriptionExpired.name"
 msgstr "Abonnement échu"
 

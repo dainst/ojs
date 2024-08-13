@@ -293,12 +293,18 @@ class ArticleSearchIndex extends SubmissionSearchIndex
             return;
         }
 
+        // Check that no journal was given as we do
+        // not support journal-specific re-indexing.
+        if (is_a($journal, 'Journal')) {
+            exit(__('search.cli.rebuildIndex.indexingByJournalNotSupported') . "\n");
+        }
+
         // Clear index
         if ($log) {
             echo __('search.cli.rebuildIndex.clearingIndex') . ' ... ';
         }
         $searchDao = DAORegistry::getDAO('ArticleSearchDAO'); /** @var ArticleSearchDAO $searchDao */
-        $searchDao->clearIndex($journal ? $journal->getId() : null);
+        $searchDao->clearIndex();
         if ($log) {
             echo __('search.cli.rebuildIndex.done') . "\n";
         }
@@ -306,7 +312,7 @@ class ArticleSearchIndex extends SubmissionSearchIndex
         // Build index
         $journalDao = DAORegistry::getDAO('JournalDAO'); /** @var JournalDAO $journalDao */
 
-        $journals = $journal ? [$journal] : $journalDao->getAll()->toArray();
+        $journals = $journalDao->getAll()->toIterator();
         foreach ($journals as $journal) {
             $numIndexed = 0;
 

@@ -18,7 +18,6 @@ namespace APP\controllers\grid\submissions;
 
 use APP\core\Application;
 use APP\facades\Repo;
-use APP\plugins\PubObjectsExportPlugin;
 use APP\submission\Submission;
 use PKP\controllers\grid\DataObjectGridCellProvider;
 use PKP\controllers\grid\GridHandler;
@@ -80,7 +79,7 @@ class ExportPublishedSubmissionsListGridCellProvider extends DataObjectGridCellP
                         new RedirectAction(
                             Repo::submission()->getWorkflowUrlByUserRoles($submission)
                         ),
-                        $title
+                        htmlspecialchars($title)
                     )
                 ];
             case 'issue':
@@ -149,7 +148,7 @@ class ExportPublishedSubmissionsListGridCellProvider extends DataObjectGridCellP
                         $label = $statusNames[$status];
                     }
                 } else {
-                    $label = $statusNames[PubObjectsExportPlugin::EXPORT_STATUS_NOT_DEPOSITED];
+                    $label = $statusNames[EXPORT_STATUS_NOT_DEPOSITED];
                 }
                 return ['label' => $label];
         }

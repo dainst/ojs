@@ -1,19 +1,18 @@
 # Dorien van Rheenen <d.van.rheenen@rug.nl>, 2023.
-# Kay <kay.pepping@huygens.knaw.nl>, 2024.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-19T10:49:28+00:00\n"
-"PO-Revision-Date: 2024-03-28 10:44+0000\n"
-"Last-Translator: Kay <kay.pepping@huygens.knaw.nl>\n"
+"PO-Revision-Date: 2023-04-11 16:21+0000\n"
+"Last-Translator: Dorien van Rheenen <d.van.rheenen@rug.nl>\n"
 "Language-Team: Dutch <http://translate.pkp.sfu.ca/projects/ojs/manager/nl/>\n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.18.2\n"
+"X-Generator: Weblate 4.13.1\n"
 
 msgid "manager.distribution.access"
 msgstr "Toegang"
@@ -52,22 +51,16 @@ msgstr ""
 
 msgid "manager.setup.enableDois.description"
 msgstr ""
-"Sta het toewijzen van Digital Object Identifiers (DOIs) aan werk dat in dit "
-"tijdschrift gepubliceerd is toe."
 
+#, fuzzy
 msgid "doi.manager.settings.doiObjectsRequired"
-msgstr ""
-"Kies de objecten waar DOI's aan toegekend moeten worden. De meeste "
-"tijdschriften wijzen DOIs toe aan artikelen, maar U kunt er voor kiezen om "
-"DOIs aan alle gepubliceerde items toe te wijzen."
+msgstr "Kies de objecten waar DOI's aan toegekend moeten worden."
 
 msgid "doi.manager.settings.doiSuffixLegacy"
 msgstr ""
-"Gebruik standaardpatronen.<br />%j.v%vi%i voor nummers<br />%j.v%vi%i.%a "
-"voor artikelen<br />%j.v%vi%i.%a.g%g voor drukproeven."
 
 msgid "doi.manager.settings.doiCreationTime.copyedit"
-msgstr "Bij het bereiken van de tekstredactiefase"
+msgstr ""
 
 msgid "manager.website.archiving"
 msgstr "Archivering"
@@ -162,9 +155,11 @@ msgstr ""
 msgid "manager.payment.generalFees"
 msgstr "Algemene betalingen"
 
+#, fuzzy
 msgid "manager.payment.generalFeesDescription"
 msgstr ""
-"Het verenigingslidmaatschap verschijnt in Over dit Tijdschrift onder Beleid."
+"Het verenigingslidmaatschap verschijnt in Over dit Tijdschrift onder Beleid "
+"en de schenkingen-link verschijnt boven de zoekfunctie in de rechterkolom."
 
 msgid "manager.payment.generalOptions"
 msgstr "Algemene opties"
@@ -312,6 +307,7 @@ msgstr "De redacteurs van deze sectie"
 msgid "manager.sections.confirmDelete"
 msgstr "Weet u zeker dat u deze sectie wilt verwijderen?"
 
+#, fuzzy
 msgid "manager.sections.alertDelete"
 msgstr ""
 "Voordat u deze sectie kunt verwijderen, moet u de erin gepubliceerde "
@@ -337,9 +333,6 @@ msgstr "Sectieredacteurs"
 
 msgid "manager.sections.confirmDeactivateSection.error"
 msgstr ""
-"Ten minste een tijdschriftsectie moet actief zijn. Bezoek de "
-"redactieprocesinstellingen om alle inzendingen aan dit tijdschrift uit te "
-"schakelen."
 
 msgid "manager.sections.form.abbrevRequired"
 msgstr "Een korte titel voor de sectie is verplicht"
@@ -744,8 +737,6 @@ msgstr "Tijdschrift-initialen"
 
 msgid "manager.setup.selectCountry"
 msgstr ""
-"Selecteer het land waar dit tijdschrift zich bevindt, of het land van het "
-"postadres van het tijdschrift of de uitgever."
 
 msgid "manager.setup.journalLayout"
 msgstr "Opmaak van het tijdschrift"
@@ -1051,10 +1042,15 @@ msgstr "Toegang voor reviewers"
 msgid "manager.setup.reviewOptions.reviewerAccessKeysEnabled"
 msgstr "Schakel één-klik toegang voor reviewers in"
 
+#, fuzzy
 msgid "manager.setup.reviewOptions.reviewerAccessKeysEnabled.description"
 msgstr ""
-"Reviewers kunnen een veilige link in de email-uitnodiging krijgen, die hen "
-"automatisch inlogged op de website wanneer zij er op klikken."
+"<strong>Noot:</strong> De uitnodigings-e-mail voor reviewers zal een "
+"speciale URL bevatten die uitgenodigde reviewers meteen naar de review-"
+"pagina voor de betreffende inzending brengt (toegang tot andere pagina's "
+"vereist inloggen). Om redenen van beveiliging kunnen redacteurs geen e-"
+"mailadressen veranderen of CC's of BCC's toevoegen voor het verzenden van "
+"uitnodigingen aan reviewers als deze optie is ingeschakeld."
 
 msgid "manager.setup.reviewOptions.reviewerAccessKeysEnabled.label"
 msgstr "Voeg een veilige link toe aan de uitnodigings-e-mail voor reviewers."
@@ -1136,14 +1132,9 @@ msgstr "Auteursrichtlijnen, copyright, and indexering (inclusief registratie)."
 
 msgid "manager.setup.disableSubmissions.description"
 msgstr ""
-"Schakel het maken van nieuwe inzendingen uit. Inzendingen kunnen voor "
-"individuele tijdschriftsecties uitgezet worden op de <a href=\"{$url}\""
-">tijdschriftsecties</a> instellingen pagina."
 
 msgid "manager.setup.disableSubmissions.notAccepting"
 msgstr ""
-"Dit tijdschrift accepteert momenteel geen inzendingen. Ga naar de "
-"distributie-instellingen om inzendingen toe te staan."
 
 msgid "manager.setup.enableOai"
 msgstr "Schakel OAI in"
@@ -1543,10 +1534,10 @@ msgid "manager.subscriptions.form.typeIdValid"
 msgstr "Kies een geldige abonnementsvorm."
 
 msgid "manager.subscriptions.form.institution"
-msgstr "Instituut"
+msgstr ""
 
 msgid "manager.subscriptions.form.institutionIdValid"
-msgstr "Selecteer een geldig instituut."
+msgstr ""
 
 msgid "manager.subscriptions.form.dateStart"
 msgstr "Startdatum"
@@ -1682,8 +1673,6 @@ msgstr ""
 
 msgid "manager.subscriptions.form.institutionRequired"
 msgstr ""
-"Er moet een instituut worden aangemaakt voordat nieuwe abbonementen "
-"afgenomen kunnen worden."
 
 msgid "manager.subscriptions.ipRange"
 msgstr "IP reeks"
@@ -2038,6 +2027,9 @@ msgstr "Duid aan als geregistreerd"
 msgid "plugins.importexport.common.action.register"
 msgstr "Registreer"
 
+msgid "plugins.importexport.common.validation"
+msgstr "Valideer XML alvorens te exporteren en registreren."
+
 msgid "plugins.importexport.common.error.noObjectsSelected"
 msgstr "Geen objecten geselecteerd."
 
@@ -2062,10 +2054,10 @@ msgid "plugins.importexport.common.register.success"
 msgstr "Registratie succesvol!"
 
 msgid "plugins.importexport.common.validation.success"
-msgstr "Validatie succesvol!"
+msgstr ""
 
 msgid "plugins.importexport.common.validation.fail"
-msgstr "Validatie mislukt."
+msgstr ""
 
 msgid "plugins.importexport.common.senderTask.warning.noDOIprefix"
 msgstr "DOI prefix ontbreekt voor het tijdschrift met het pad {$path}."
@@ -2079,62 +2071,52 @@ msgstr ""
 "in de instellingen voor het tijdschrift."
 
 msgid "stats.contextStats"
-msgstr "Tijdschriftstatistieken"
+msgstr ""
 
 msgid "stats.context.tooltip.text"
-msgstr "Aantal bezoekers dat de indexpagina van het tijdschrift heeft bekeken."
+msgstr ""
 
 msgid "stats.context.tooltip.label"
-msgstr "Over tijdschriftstatistieken"
+msgstr ""
 
 msgid "stats.context.downloadReport.description"
 msgstr ""
-"Download een CSV/Excel tabel met gebruiksstatistieken voor dit tijdschrift "
-"passend bij de volgende parameters."
 
 msgid "stats.context.downloadReport.downloadContext.description"
-msgstr "Het aantal keren dat de index van dit tijdschrift bekeken is."
+msgstr ""
 
 msgid "stats.context.downloadReport.downloadContext"
-msgstr "Download tijdschrift"
+msgstr ""
 
 msgid "stats.issueStats"
-msgstr "Nummerstatistieken"
+msgstr ""
 
 msgid "stats.issues.details"
-msgstr "Aantal keer bekeken en downloads"
+msgstr ""
 
 msgid "stats.issues.searchIssueDescription"
-msgstr "Zoek nummertitel, volume en getal"
+msgstr ""
 
 msgid "stats.issues.none"
 msgstr ""
-"Er zijn geen nummers gevonden in de gebruiksstatistieken met deze parameters."
 
 msgid "stats.issues.downloadReport.description"
 msgstr ""
-"Download een CSV/Excel tabel met gebruiksstatistieken voor nummers passend "
-"bij de volgende parameters."
 
 msgid "stats.issues.downloadReport.downloadIssues.description"
 msgstr ""
-"Het aantal keer dat de inhoudsopgave is bekeken en de nummerdrukproef van "
-"elk nummer is gedownload."
 
 msgid "stats.issues.downloadReport.downloadIssues"
-msgstr "Download nummers"
+msgstr ""
 
 msgid "stats.issues.countOfTotal"
-msgstr "{$count} van {$total} nummers"
+msgstr ""
 
 msgid "stats.issues.tooltip.label"
-msgstr "Over nummerstatistieken"
+msgstr ""
 
 msgid "stats.issues.tooltip.text"
 msgstr ""
-"<strong>Aantal keer bekeken</strong>: aantal bezoekers die de inhoudsopgave "
-"van het nummer hebben bekeken.<br><strong>Downloads</strong>: Aantal "
-"downloads van de drukproef van het gehele nummer, als deze bestaat."
 
 msgid "stats.publicationStats"
 msgstr "Artikelstatistieken"
@@ -2164,129 +2146,113 @@ msgstr "Bestanden"
 
 msgid "stats.publications.downloadReport.description"
 msgstr ""
-"Download een CSV/Excel tabel met gebruiksstatistieken voor artikelen die bij "
-"de volgende parameters passen."
 
 msgid "stats.publications.downloadReport.downloadSubmissions"
-msgstr "Download artikelen"
+msgstr ""
 
 msgid "stats.publications.downloadReport.downloadSubmissions.description"
 msgstr ""
-"Het aantal keer dat de abstract van een artikel bekeken is en het aantal "
-"bestandsdownloads voor elk artikel."
 
 msgid "manager.setup.notifications.copySubmissionAckPrimaryContact.description"
 msgstr ""
-"Stuur een kopie van de aanvaardingsmail naar de eerste contactpersoon van "
-"dit tijdschrift."
 
 msgid ""
 "manager.setup.notifications.copySubmissionAckPrimaryContact.disabled."
 "description"
 msgstr ""
-"Er is geen eerste contactpersoon voor dit tijdschrift. U kunt een eerste "
-"contactpersoon instellen via de <a href=\"{$url}\""
-">tijdschriftinstellingen</a>."
 
 msgid "plugins.importexport.native.export.issues.results"
-msgstr "Exporteer nummer resultaten"
+msgstr ""
 
 msgid "plugins.importexport.issue.cli.display"
-msgstr "\"{$issueId}\" - \"{$issueIdentification}\""
+msgstr ""
 
 msgid "plugins.importexport.issueGalleys.exportFailed"
-msgstr "Het is het process niet gelukt om de nummerdrukproeven te analyseren"
+msgstr ""
 
 msgid "emailTemplate.variable.context.contextName"
-msgstr "De naam van het tijdschrift"
+msgstr ""
 
 msgid "emailTemplate.variable.context.contextUrl"
-msgstr "De URL naar de startpagina van het tijdschrift"
+msgstr ""
 
 msgid "emailTemplate.variable.context.contactName"
-msgstr "De naam van de eerste contactpersoonv van het tijdschrift"
+msgstr ""
 
 msgid "emailTemplate.variable.context.contextAcronym"
-msgstr "De initialen van het tijdschrift"
+msgstr ""
 
 msgid "emailTemplate.variable.context.contextSignature"
-msgstr "De automatische mail-handtekening van het tijdschrift"
+msgstr ""
 
 msgid "emailTemplate.variable.context.contactEmail"
-msgstr "Het emailadres van de eerste contactpersoon van het tijdschrift"
+msgstr ""
 
 msgid "emailTemplate.variable.context.mailingAddress"
-msgstr "Het emailadres van het tijdschrift"
+msgstr ""
 
 msgid "emailTemplate.variable.queuedPayment.itemName"
-msgstr "De naam van de betaalwijze"
+msgstr ""
 
 msgid "emailTemplate.variable.queuedPayment.itemCost"
-msgstr "Het betaalbedrag"
+msgstr ""
 
 msgid "emailTemplate.variable.queuedPayment.itemCurrencyCode"
-msgstr "De munteenheid van het betaalbedrag, zoals USD"
+msgstr ""
 
 msgid "emailTemplate.variable.site.siteTitle"
-msgstr "Naam van de website waar meer dan een tijdschrift gehost is"
+msgstr ""
 
 msgid "emailTemplate.variable.subscription.subscriberDetails"
-msgstr "De naam, affiliate, het telefoonnummer en mailadres van de abonnee"
+msgstr ""
 
 msgid "emailTemplate.variable.subscription.subscriptionSignature"
-msgstr "De contactgegevens van de abonnementsbeheerder"
+msgstr ""
 
 msgid "emailTemplate.variable.subscription.subscriptionUrl"
-msgstr "De URL van de abonnementspagina"
+msgstr ""
 
 msgid "emailTemplate.variable.subscription.expiryDate"
-msgstr "De datum waarop het abonnement afloopt"
+msgstr ""
 
 msgid "emailTemplate.variable.subscription.subscriptionType"
-msgstr "Een samenvatting van het type abbonement, de naam, de duur en de kosten"
+msgstr ""
 
 msgid "emailTemplate.variable.subscription.membership"
-msgstr "Informatie over het lidmaatschap van de abonnee"
+msgstr ""
 
 msgid "emailTemplate.variable.subscription.institutionName"
-msgstr "De naam van de geabonneerde institutie"
+msgstr ""
 
 msgid "emailTemplate.variable.subscription.institutionMailingAddress"
-msgstr "Het mailadres van de geabonneerde institutie"
+msgstr ""
 
 msgid "emailTemplate.variable.subscription.domain"
 msgstr ""
-"De domeinnaam van een (of meer) valide IP adres(sen) voor dit abonnement"
 
 msgid "emailTemplate.variable.subscription.ipRanges"
-msgstr "De geldige IP-bereiken voor dit abonnement"
+msgstr ""
 
 msgid "emailTemplate.variable.queuedPaymentUrl"
-msgstr "URL naar de pagina waarop de auteur een betaling kan maken"
+msgstr ""
 
 msgid "emailTemplate.variable.submissionGuidelinesUrl"
-msgstr "URL naar de inzendingsrichtlijnen"
+msgstr ""
 
 msgid "emailTemplate.variable.statisticsReportNotify.publicationStatsLink"
-msgstr "Een link naar de statistiekenpagina voor gepubliceerde artikelen"
+msgstr ""
 
 msgid "emailTemplate.variable.issueId"
-msgstr "Het nummer ID"
+msgstr ""
 
 msgid "mailable.statisticsReportNotify.description"
 msgstr ""
-"Deze mail wordt op manadelijkse basis automatisch naar redacteurs en "
-"tijdschriftbeheerders gezonden om hen een overzicht te geven van de "
-"gezondheid van het tijdschrift."
 
 msgid "mailable.validateEmailContext.name"
-msgstr "Valideer Email (tijdschriftregistratie)"
+msgstr ""
 
 msgid "mailable.validateEmailContext.description"
 msgstr ""
-"Deze mail wordt automatisch verzonden naar een nieuwe gebruiker wanneer deze "
-"zich registreert bij een tijdschrift, als de instellingen vereisen dat het "
-"mailadres gevalideerd wordt."
 
 msgid "doi.displayName"
 msgstr "DOI"
@@ -2300,7 +2266,7 @@ msgid "doi.readerDisplayName"
 msgstr "DOI"
 
 msgid "doi.manager.displayName"
-msgstr "DOIs"
+msgstr ""
 
 msgid "doi.manager.settings.description"
 msgstr ""
@@ -2314,7 +2280,7 @@ msgid "doi.manager.settings.enableRepresentationDoi"
 msgstr "Proeven"
 
 msgid "doi.manager.settings.galleysWithDescription"
-msgstr "Artikeldrukproeven, zoals een gepubliceerde PDF"
+msgstr ""
 
 msgid "doi.manager.settings.doiPrefix"
 msgstr "DOI voorvoegsel"
@@ -2384,15 +2350,13 @@ msgstr ""
 "nog geen DOI hebben?"
 
 msgid "doi.manager.settings.registrationAgency"
-msgstr "Registratiebureau"
+msgstr ""
 
 msgid "doi.manager.settings.registrationAgency.description"
 msgstr ""
-"Selecteer alstublief het registratiebureau dat u zou willen gebruiken voor "
-"het deponeren van DOIs."
 
 msgid "doi.manager.settings.registrationAgency.none"
-msgstr "Geen"
+msgstr ""
 
 msgid "doi.editor.doi"
 msgstr "DOI"
@@ -2478,7 +2442,7 @@ msgid "doi.editor.assignDoi.assigned"
 msgstr "De URN {$pubId} werd toegekend."
 
 msgid "doi.editor.assignDoi.toBeAssigned"
-msgstr "De DOI {$pubId} zal worden toegewezen bij publicatie."
+msgstr ""
 
 msgid "doi.editor.missingPrefix"
 msgstr "De DOI moet beginnen met {$doiPrefix}."
@@ -2496,39 +2460,34 @@ msgid "doi.editor.preview.objects"
 msgstr "Onderdeel"
 
 msgid "api.galley.403.publicationDidNotMatch"
-msgstr "De gevraagde drukproef is geen onderdeel van deze publicatie."
+msgstr ""
 
 msgid "api.galley.403.canEditPublishedDoi"
 msgstr ""
-"Enkel DOIs kunnen worden aangepast nadat een publicatie/drukproef "
-"gepubliceerd is"
 
 msgid "api.issue.400.invalidDoi"
-msgstr "De toegewezen DOI is niet geldig"
+msgstr ""
 
 msgid "api.issue.403.canEditPublishedDoi"
-msgstr "Enkel DOIs kunnen worden aangepast nadat een publicatie is gepubliceerd"
+msgstr ""
 
 msgid "api.issue.404.issuesNotFound"
-msgstr "De nummers die zijn aangevraagd konden niet worden gevonden"
+msgstr ""
 
 msgid "doi.manager.submissionDois"
-msgstr "Artikel DOIs"
+msgstr ""
 
 msgid "doi.manager.issueDois"
-msgstr "Nummer DOIs"
+msgstr ""
 
 msgid "mailable.decision.initialDecline.notifyAuthor.description"
 msgstr ""
-"Deze mail informeert de auteur dat hun inzending is afgewezen, voor de "
-"reviewfase, omdat de inzending niet voldoet aan de eisen voor publicatie in "
-"dit tijdschrift."
 
 msgid "manager.institutions.noContext"
-msgstr "Het tijdschrift van dit instituut kon niet worden gevonden."
+msgstr ""
 
 msgid "mailable.subscriptionNotify.name"
-msgstr "Abonnementsnotificatie"
+msgstr ""
 
 msgid "mailable.subscriptionNotify.description"
 msgstr ""
@@ -2537,7 +2496,7 @@ msgstr ""
 "toegang te krijgen."
 
 msgid "mailable.subscriptionExpiresSoon.name"
-msgstr "Abonnement verloopt binnenkort"
+msgstr ""
 
 msgid "mailable.subscriptionExpiresSoon.description"
 msgstr ""
@@ -2546,7 +2505,7 @@ msgstr ""
 "meegestuurd."
 
 msgid "mailable.subscriptionExpired.name"
-msgstr "Abonnement verlopen"
+msgstr ""
 
 msgid "mailable.subscriptionExpired.description"
 msgstr ""
@@ -2554,7 +2513,7 @@ msgstr ""
 "het tijdschrift en instructies om toegang te krijgen worden meegestuurd."
 
 msgid "mailable.subscriptionExpiredLast.name"
-msgstr "Abonnement is verlopen sinds"
+msgstr ""
 
 msgid "mailable.subscriptionExpiredLast.description"
 msgstr ""
@@ -2562,7 +2521,7 @@ msgstr ""
 "URL van het tijdschrift en instructies voor toegang worden meegeleverd."
 
 msgid "mailable.subscriptionPurchaseIndividual.name"
-msgstr "Koop individueel abonnement"
+msgstr ""
 
 msgid "mailable.subscriptionPurchaseIndividual.description"
 msgstr ""
@@ -2571,7 +2530,7 @@ msgstr ""
 "en een snelle toegangslink tot het gekochte abonnement gegeven."
 
 msgid "mailable.subscriptionPurchaseInstitutional.name"
-msgstr "Koop instituutsabonnement"
+msgstr ""
 
 msgid "mailable.subscriptionPurchaseInstitutional.description"
 msgstr ""
@@ -2580,7 +2539,7 @@ msgstr ""
 "en een snelle toegangslink tot het gekochte abonnement gegeven."
 
 msgid "mailable.subscriptionRenewIndividual.name"
-msgstr "Vernieuw individueel abonnement"
+msgstr ""
 
 msgid "mailable.subscriptionRenewIndividual.description"
 msgstr ""
@@ -2589,7 +2548,7 @@ msgstr ""
 "abonnement en een snelle toegangslink tot het verlengde abonnement gegeven."
 
 msgid "mailable.subscriptionRenewInstitutional.name"
-msgstr "Vernieuw instituutsabonnement"
+msgstr ""
 
 msgid "mailable.subscriptionRenewInstitutional.description"
 msgstr ""
@@ -2598,7 +2557,7 @@ msgstr ""
 "abonnement en een snelle toegangslink tot het verlengde abonnement gegeven."
 
 msgid "mailable.openAccessNotify.name"
-msgstr "Open Access Notificatie"
+msgstr ""
 
 msgid "mailable.openAccessNotify.description"
 msgstr ""
@@ -2606,39 +2565,31 @@ msgstr ""
 "hebben een e-mail te willen ontvangen als een nummer open access wordt."
 
 msgid "mailable.issuePublishNotify.name"
-msgstr "Nummer gepubliceerd notificatie"
+msgstr ""
 
 msgid "mailable.issuePublishNotify.description"
 msgstr ""
-"Deze mail wordt automatisch verstuurd naar geregistreerde gebruikers wanneer "
-"er een nieuw nummer is gepubliceerd."
 
 msgid "manager.manageEmails.description"
-msgstr "Wijzig de berichten die verstuurd worden in mails van dit tijdschrift."
+msgstr ""
 
 msgid "mailable.layoutComplete.name"
-msgstr "Drukproeven compleet"
+msgstr ""
 
 msgid "mailable.publicationVersionNotify.name"
-msgstr "Nieuwe versie aangemaakt"
+msgstr ""
 
 msgid "mailable.publicationVersionNotify.description"
 msgstr ""
-"Deze mail brengt toegewezen auteurs automatisch op de hoogte wanneer een "
-"nieuwe versie van de inzending is aangemaakt."
 
 msgid "mailable.submissionNeedsEditor.description"
 msgstr ""
-"Deze mail wordt verstuurd naar tijdschriftmanagers wanneer er een nieuwe "
-"inzending waar geen redacteur aan is toegewezen."
 
 msgid "mailable.paymentRequest.name"
-msgstr "Betalingsverzoek"
+msgstr ""
 
 msgid "mailable.paymentRequest.description"
 msgstr ""
-"Deze automatische mail wordt verstuurd aan de auteur om een betalingsverzoek "
-"te doen voor het publicatietarief wanneer de inzending geaccepteerd is."
 
 #~ msgid "manager.statistics.statistics.registeredUsers"
 #~ msgstr "Geregistreerde gebruikers"
@@ -2648,16 +2599,3 @@ msgstr ""
 
 #~ msgid "doi.manager.settings.enablePublicationDoi"
 #~ msgstr "Artikelen"
-
-msgid "plugins.importexport.common.error.import.issueGalleyFileMissing"
-msgstr "Een nummer-drukproef kon niet worden geïmporteerd, het bestand mist."
-
-msgid "plugins.importexport.common.error.issueGalleyFileMissing"
-msgstr ""
-"De nummer-drukproef {$id} kon niet worden geëxporteerd, het bestand is niet "
-"gevonden via pad \"{$path}\"."
-
-msgid "plugins.importexport.common.error.issueCoverImageMissing"
-msgstr ""
-"De omslagafbeelding van nummer {$id} is niet geëxporteerd, het bestand is "
-"niet gevonden via pad \"{$path}\"."

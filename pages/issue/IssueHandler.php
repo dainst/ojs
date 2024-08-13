@@ -165,7 +165,7 @@ class IssueHandler extends Handler
             ->filterByPublished(true);
 
         $issues = $collector->getMany()->toArray();
-        $total = $collector->getCount();
+        $total = $collector->limit(null)->offset(null)->getCount();
 
         $showingStart = $offset + 1;
         $showingEnd = min($offset + $count, $offset + count($issues));

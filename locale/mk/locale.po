@@ -2417,6 +2417,11 @@ msgstr "<p> Отстранете го одобрувањето на овој о�
 msgid "search.cli.rebuildIndex.indexing"
 msgstr "Индексирање „{$journalName}“"
 
+msgid "search.cli.rebuildIndex.indexingByJournalNotSupported"
+msgstr ""
+"Оваа имплементација на пребарување не дозволува повторно индексирање по "
+"списание."
+
 msgid "search.cli.rebuildIndex.unknownJournal"
 msgstr ""
 "Дадената патека за списанија „{$journalPath}“ не може да се реши во списание."

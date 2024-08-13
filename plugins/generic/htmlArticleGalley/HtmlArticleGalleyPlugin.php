@@ -81,11 +81,17 @@ class HtmlArticleGalleyPlugin extends \PKP\plugins\GenericPlugin
     {
         $request = & $args[0];
         $issue = & $args[1];
-        /** @var \PKP\galley\Galley */
         $galley = & $args[2];
         $article = & $args[3];
 
-        if ($galley && $galley->getFileType() === 'text/html') {
+        if (!$galley) {
+            return false;
+        }
+
+        $submissionFile = $galley->getFile();
+        /** @var ?Publication */
+        $galleyPublication = null;
+        if ($submissionFile->getData('mimetype') === 'text/html') {
             /** @var ?Publication */
             $galleyPublication = null;
             foreach ($article->getData('publications') as $publication) {
@@ -101,7 +107,7 @@ class HtmlArticleGalleyPlugin extends \PKP\plugins\GenericPlugin
                 'galley' => $galley,
                 'isLatestPublication' => $article->getData('currentPublicationId') === $galley->getData('publicationId'),
                 'galleyPublication' => $galleyPublication,
-                'submissionFile' => $galley->getFile(),
+                'submissionFile' => $submissionFile,
             ]);
             $templateMgr->display($this->getTemplateResource('display.tpl'));
 

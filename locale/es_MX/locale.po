@@ -2044,6 +2044,9 @@ msgstr ""
 msgid "search.cli.rebuildIndex.indexing"
 msgstr ""
 
+msgid "search.cli.rebuildIndex.indexingByJournalNotSupported"
+msgstr ""
+
 msgid "search.cli.rebuildIndex.unknownJournal"
 msgstr ""
 
