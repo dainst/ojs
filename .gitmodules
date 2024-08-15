@@ -94,3 +94,6 @@
 	path = plugins/generic/cilantro
 	url = https://github.com/dainst/ojs-cilantro-plugin
 	branch = ojs3
+[submodule "plugins/pubIds/zenon"]
+	path = plugins/pubIds/zenon
+	url = https://github.com/dainst/publications-zenon-plugin.git
