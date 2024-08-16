@@ -1,9 +1,6 @@
 [submodule "lib/pkp"]
 	path = lib/pkp
 	url = https://github.com/pkp/pkp-lib.git
-[submodule "plugins/generic/usageStats"]
-        path = plugins/generic/usageStats
-        url = https://github.com/pkp/usageStats.git
 [submodule "plugins/generic/customBlockManager"]
 	path = plugins/generic/customBlockManager
 	url = https://github.com/pkp/customBlockManager.git
@@ -43,36 +40,16 @@
 	url = https://github.com/pkp/citationStyleLanguage.git
 [submodule "plugins/reports/counter/classes/COUNTER"]
 	path = plugins/reports/counter/classes/COUNTER
-	url = https://github.com/ulsdevteam/COUNTER.git
-[submodule "plugins/pubIds/zenon"]
-	path = plugins/pubIds/zenon
-	url = https://github.com/dainst/ojs-zenon-plugin
-	branch = ojs3
-[submodule "plugins/themes/idaitheme"]
-	path = plugins/themes/idaitheme
-	url = https://github.com/dainst/ojs3_theme
-[submodule "plugins/generic/cilantro"]
-	path = plugins/generic/cilantro
-	url = https://github.com/dainst/ojs-cilantro-plugin
-	branch = ojs3
-[submodule "plugins/importexport/quickSubmit"]
-	path = plugins/importexport/quickSubmit
-	url = https://github.com/pkp/quickSubmit
-	branch = stable-3_1_2
-[submodule "plugins/generic/daiBookViewer"]
-	path = plugins/generic/daiBookViewer
-	url = https://github.com/dainst/dai-book-viewer-ojs-plugin
+	url = https://github.com/pkp/COUNTER.git
 [submodule "plugins/blocks/browse"]
 	path = plugins/blocks/browse
 	url = https://github.com/pkp/browse
-[submodule "plugins/importexport/dnb"]
-	path = plugins/importexport/dnb
-	url = https://github.com/ojsde/dnb.git
-[submodule "plugins/themes/publications-theme"]
-	path = plugins/themes/publications-theme
-	url = https://github.com/dainst/publications-theme.git
-[submodule "plugins/generic/piwik"]
-	path = plugins/generic/piwik
-	url = https://github.com/pkp/piwik.git
-[submodule "publications-theme"]
-	branch = main
+[submodule "plugins/generic/crossref"]
+	path = plugins/generic/crossref
+	url = https://github.com/pkp/crossref-ojs
+[submodule "plugins/generic/acron"]
+	path = plugins/generic/acron
+	url = https://github.com/pkp/acron
+[submodule "plugins/generic/webFeed"]
+	path = plugins/generic/webFeed
+	url = https://github.com/pkp/webFeed.git

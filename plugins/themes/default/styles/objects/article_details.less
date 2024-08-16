@@ -36,6 +36,10 @@
 		> *:last-child {
 			margin-bottom: 0;
 		}
+
+		> h2 + p {
+			margin-top: 0;
+		}
 	}
 
 	.sub_item {
@@ -85,9 +89,12 @@
 			display: block;
 		}
 
+		.userGroup {
+			display: block;
+		}
 		.orcid {
 			display: block;
-			font-size: @font-tiny;
+			font-size: @font-sml;
 			line-height: @double;
 
 			a {
@@ -127,9 +134,12 @@
 
 	.galleys_links {
 		&:extend(.pkp_unstyled_list);
+		display: flex;
+		flex-flow: row nowrap;
+		justify-content: start;
 
 		li {
-			display: inline-block;
+			margin-inline-end: 1rem;
 		}
 	}
 
@@ -184,7 +194,7 @@
 	.citation_display {
 
 		.value {
-			font-size: @font-tiny;
+			font-size: @font-sml;
 		}
 
 		// Hide the bibliography number produced by some CSL styles

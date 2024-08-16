@@ -22,7 +22,7 @@
 
 	{include file="controllers/notification/inPlaceNotification.tpl" notificationId="individualSubscriptionNotification"}
 
-	{capture assign=subscriberSelectGridUrl}{url router=$smarty.const.ROUTE_COMPONENT component="grid.users.subscriberSelect.SubscriberSelectGridHandler" op="fetchGrid" escape=false userId=$userId}{/capture}
+	{capture assign=subscriberSelectGridUrl}{url router=\PKP\core\PKPApplication::ROUTE_COMPONENT component="grid.users.subscriberSelect.SubscriberSelectGridHandler" op="fetchGrid" escape=false userId=$userId}{/capture}
 	{load_url_in_div id='subscriberSelectGridContainer' url=$subscriberSelectGridUrl}
 
 	{fbvFormArea id="individualSubscriptionFormArea"}
@@ -40,6 +40,10 @@
 
 		{fbvFormSection label="manager.subscriptions.form.notes"}
 			{fbvElement type="textarea" name="notes" id="notes" value=$notes rich=true}
+		{/fbvFormSection}
+
+		{fbvFormSection for="notifyEmail" list=true}
+			{fbvElement type="checkbox" label="manager.subscriptions.form.notifyEmail" name="notifyEmail" id="notifyEmail"}
 		{/fbvFormSection}
 	{/fbvFormArea}
 

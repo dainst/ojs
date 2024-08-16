@@ -7,7 +7,10 @@ temp
 .project
 .buildpath
 .settings
+.vscode
 .DS_Store
+.php_cs.cache
+.php-cs-fixer.cache
 node_modules
 js/build.js
 js/hot-updates
@@ -15,3 +18,4 @@ styles/build.css
 cypress.env.json
 cypress/logs/
 cypress/screenshots/
+.phpunit.result.cache
