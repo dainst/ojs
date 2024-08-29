@@ -103,3 +103,6 @@
 [submodule "plugins/blocks/browse-3.4"]
 	path = plugins/blocks/browse-3.4
 	url = https://github.com/pkp/browse.git
+[submodule "plugins/generic/piwik"]
+	path = plugins/generic/piwik
+	url = https://github.com/pkp/piwik.git
