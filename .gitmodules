@@ -42,10 +42,6 @@
 	path = plugins/blocks/makeSubmission
 	url = https://github.com/pkp/makeSubmission.git
 
-[submodule "plugins/reports/reviewReport"]
-	path = plugins/reports/reviewReport
-	url = https://github.com/pkp/reviewReport
-
 [submodule "plugins/generic/citationStyleLanguage"]
 	path = plugins/generic/citationStyleLanguage
 	url = https://github.com/pkp/citationStyleLanguage.git
