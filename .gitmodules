@@ -105,3 +105,6 @@
 [submodule "plugins/generic/ror"]
 	path = plugins/generic/ror
 	url = https://github.com/withanage/ror.git
+[submodule "plugins/reports/reviewReport"]
+	path = plugins/reports/reviewReport
+	url = https://github.com/pkp/reviewReport.git
