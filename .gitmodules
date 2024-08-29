@@ -104,3 +104,6 @@
 [submodule "plugins/pubIds/zenon"]
 	path = plugins/pubIds/zenon
 	url = https://github.com/dainst/publications-zenon-plugin.git
+[submodule "plugins/blocks/browse-3.4"]
+	path = plugins/blocks/browse-3.4
+	url = https://github.com/pkp/browse.git
