@@ -106,3 +106,6 @@
 [submodule "plugins/generic/piwik"]
 	path = plugins/generic/piwik
 	url = https://github.com/pkp/piwik.git
+[submodule "plugins/generic/ror"]
+	path = plugins/generic/ror
+	url = https://github.com/withanage/ror.git
