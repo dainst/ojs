@@ -42,10 +42,6 @@
 	path = plugins/blocks/makeSubmission
 	url = https://github.com/pkp/makeSubmission.git
 
-[submodule "plugins/generic/citationStyleLanguage"]
-	path = plugins/generic/citationStyleLanguage
-	url = https://github.com/pkp/citationStyleLanguage.git
-
 [submodule "plugins/reports/counter/classes/COUNTER"]
 	path = plugins/reports/counter/classes/COUNTER
 	url = https://github.com/pkp/COUNTER.git
@@ -108,3 +104,12 @@
 [submodule "plugins/reports/reviewReport"]
 	path = plugins/reports/reviewReport
 	url = https://github.com/pkp/reviewReport.git
+[submodule "plugins/generic/citationStyleLanguage"]
+	path = plugins/generic/citationStyleLanguage
+	url = https://github.com/pkp/citationStyleLanguage.git
+[submodule "plugins/generic/citationManager"]
+	path = plugins/generic/citationManager
+	url = https://github.com/TIBHannover/citationManager.git
+[submodule "plugins/generic/authorRequirements"]
+	path = plugins/generic/authorRequirements
+	url = https://github.com/pkp/authorRequirements.git
