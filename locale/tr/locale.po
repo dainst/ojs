@@ -200,7 +200,7 @@ msgid "article.discipline"
 msgstr "Akademik Bölüm ve Alt-Bölümler"
 
 msgid "article.subject"
-msgstr "Anahtar Kelimeler"
+msgstr "Anahtar Sözcükler"
 
 msgid "article.coverage"
 msgstr "Kapsam"
@@ -227,7 +227,7 @@ msgid "article.details"
 msgstr "Ayrıntılar"
 
 msgid "article.abstract"
-msgstr "Öz"
+msgstr "Özet"
 
 msgid "article.coverPage.altText"
 msgstr "Kapak Görseli"
