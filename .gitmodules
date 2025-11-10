@@ -113,3 +113,6 @@
 [submodule "plugins/generic/authorRequirements"]
 	path = plugins/generic/authorRequirements
 	url = https://github.com/pkp/authorRequirements.git
+[submodule "plugins/generic/deleteIncompleteSubmissions"]
+	path = plugins/generic/deleteIncompleteSubmissions
+	url = https://github.com/lepidus/deleteIncompleteSubmissions.git
