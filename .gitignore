@@ -1,9 +1,9 @@
 /config.inc.php
 ./build
-temp
 /files
-/plugins/paymethod/paypal/
-/cache/
+temp
+plugins/paymethod/paypal/
+cache/
 .htaccess
 .project
 .buildpath
