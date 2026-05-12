@@ -445,3 +445,6 @@ msgstr "Bitte wählen Sie die Rolle der Beiträgerin/des Beiträgers aus."
 
 #~ msgid "editor.submission.decision.sendExternalReview"
 #~ msgstr "In Begutachtung schicken"
+
+msgid "submission.supportingAgencies"
+msgstr "Unterstützende Organisationen"
