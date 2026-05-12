@@ -104,9 +104,6 @@
 [submodule "plugins/reports/reviewReport"]
 	path = plugins/reports/reviewReport
 	url = https://github.com/pkp/reviewReport.git
-[submodule "plugins/generic/citationStyleLanguage"]
-	path = plugins/generic/citationStyleLanguage
-	url = https://github.com/pkp/citationStyleLanguage.git
 [submodule "plugins/generic/citationManager"]
 	path = plugins/generic/citationManager
 	url = https://github.com/TIBHannover/citationManager.git
